@@ -1,0 +1,455 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { AlertTriangle, Check, Sparkles } from 'lucide-react'
+import type { Hackathon, Theme, ViewName } from './types'
+import { sampleHackathons } from './data'
+import { addDays, daysUntil, toISODate } from './lib/date'
+import { backupDue, loadEvents, makeId, saveEvents } from './lib/storage'
+import { runReminders } from './lib/reminders'
+import { loadProfile, saveProfile } from './lib/profile'
+import { rememberTrigger } from './lib/focus'
+import { Sidebar } from './components/Sidebar'
+import { Topbar } from './components/Topbar'
+import { OverviewView } from './components/OverviewView'
+import { HackathonsView } from './components/HackathonsView'
+import { CalendarView } from './components/CalendarView'
+import { InsightsView } from './components/InsightsView'
+import { DetailDrawer } from './components/DetailDrawer'
+import { EditorDrawer } from './components/EditorDrawer'
+import { DataDrawer } from './components/DataDrawer'
+import { SuggestView } from './components/SuggestView'
+import { FinderView } from './components/FinderView'
+import { TimerWidget } from './components/TimerWidget'
+import type { CatalogEntry } from './lib/catalog'
+
+export default function App() {
+  const [events, setEvents] = useState<Hackathon[]>(loadEvents)
+  const [theme, setTheme] = useState<Theme>(() => {
+    try {
+      const saved = window.localStorage.getItem('hackmate.theme')
+      if (saved === 'light' || saved === 'dark') return saved
+    } catch {
+      // Fall through to the system preference.
+    }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  })
+  const [userName, setUserName] = useState(() => loadProfile().name)
+  const [view, setView] = useState<ViewName>('overview')
+  const [search, setSearch] = useState('')
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [detailId, setDetailId] = useState<string | null>(null)
+  const [editorOpen, setEditorOpen] = useState(false)
+  const [dataOpen, setDataOpen] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [toast, setToast] = useState<string | null>(null)
+  const [toastTone, setToastTone] = useState<'success' | 'warning'>('success')
+  const [undo, setUndo] = useState<{ event: Hackathon; index: number } | null>(null)
+  const toastTimer = useRef<number | null>(null)
+  const saveFailed = useRef(false)
+
+  useEffect(() => {
+    if (saveEvents(events)) {
+      saveFailed.current = false
+      return
+    }
+    if (!saveFailed.current) {
+      saveFailed.current = true
+      setToastTone('warning')
+      setToast('This browser would not save your changes. Export a backup to be safe.')
+      if (toastTimer.current) window.clearTimeout(toastTimer.current)
+      toastTimer.current = window.setTimeout(() => setToast(null), 6000)
+    }
+  }, [events])
+
+  const notify = useCallback((message: string, tone: 'success' | 'warning' = 'success') => {
+    setToastTone(tone)
+    setToast(message)
+    if (toastTimer.current) window.clearTimeout(toastTimer.current)
+    toastTimer.current = window.setTimeout(() => {
+      setToast(null)
+      setUndo(null)
+    }, 5200)
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (toastTimer.current) window.clearTimeout(toastTimer.current)
+    }
+  }, [])
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    // Native controls (date pickers, scrollbars) follow the app theme.
+    document.documentElement.style.colorScheme = theme
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', theme === 'dark' ? '#0c1815' : '#f4f8f4')
+    try {
+      window.localStorage.setItem('hackmate.theme', theme)
+    } catch {
+      // A blocked write just means the choice is not remembered.
+    }
+  }, [theme])
+
+  useEffect(() => {
+    if (backupDue(events)) {
+      notify('No backup in the last week — your data lives only on this device.', 'warning')
+    }
+    // Runs once on open; later edits should not nag.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    runReminders(events)
+    const timer = window.setInterval(() => runReminders(events), 60_000)
+    return () => window.clearInterval(timer)
+  }, [events])
+
+  const handleNameChange = useCallback((name: string) => {
+    setUserName(name)
+    saveProfile({ name: name.trim() })
+  }, [])
+
+  const navigate = useCallback((nextView: ViewName) => {
+    setView(nextView)
+    setSidebarOpen(false)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [])
+
+  const openNew = useCallback(() => {
+    rememberTrigger()
+    setDetailId(null)
+    setDataOpen(false)
+    setEditingId(null)
+    setEditorOpen(true)
+  }, [])
+
+  const openEvent = useCallback((event: Hackathon) => {
+    rememberTrigger()
+    setEditorOpen(false)
+    setDataOpen(false)
+    setDetailId(event.id)
+  }, [])
+
+  const openData = useCallback(() => {
+    rememberTrigger()
+    setDetailId(null)
+    setEditorOpen(false)
+    setEditingId(null)
+    setSidebarOpen(false)
+    setDataOpen(true)
+  }, [])
+
+  const closeDrawer = useCallback(() => {
+    setDetailId(null)
+    setEditorOpen(false)
+    setDataOpen(false)
+    setEditingId(null)
+  }, [])
+
+  const openEdit = useCallback((event: Hackathon) => {
+    rememberTrigger()
+    setDetailId(null)
+    setDataOpen(false)
+    setEditingId(event.id)
+    setEditorOpen(true)
+  }, [])
+
+  const handleSave = useCallback(
+    (saved: Hackathon) => {
+      const exists = events.some((event) => event.id === saved.id)
+      setEvents((previous) =>
+        exists
+          ? previous.map((event) => (event.id === saved.id ? saved : event))
+          : [saved, ...previous],
+      )
+      setEditorOpen(false)
+      setEditingId(null)
+      setDetailId(saved.id)
+      notify(exists ? 'Hackathon updated. Looking good.' : 'A new adventure is on the board.')
+    },
+    [events, notify],
+  )
+
+  const handleDelete = useCallback(
+    (id: string) => {
+      const index = events.findIndex((event) => event.id === id)
+      if (index >= 0) setUndo({ event: events[index], index })
+      setEvents((previous) => previous.filter((event) => event.id !== id))
+      setDetailId(null)
+      setEditorOpen(false)
+      notify('Hackathon removed. Undo is here if that was a slip.')
+    },
+    [events, notify],
+  )
+
+  const restoreDeleted = useCallback(() => {
+    if (!undo) return
+    setEvents((previous) => {
+      const next = [...previous]
+      next.splice(Math.min(undo.index, next.length), 0, undo.event)
+      return next
+    })
+    setUndo(null)
+    notify('Back on the board.')
+  }, [notify, undo])
+
+  const handleImport = useCallback(
+    (imported: Hackathon[]) => {
+      setEvents(imported)
+      setDataOpen(false)
+      setView('hackathons')
+      notify(
+        imported.length === 0
+          ? 'Backup was empty. Your board is clear.'
+          : `Imported ${imported.length} ${imported.length === 1 ? 'hackathon' : 'hackathons'}.`,
+      )
+    },
+    [notify],
+  )
+
+  const handleReset = useCallback(() => {
+    setEvents(sampleHackathons)
+    setDataOpen(false)
+    setView('overview')
+    notify('A fresh sample season, ready to explore.')
+  }, [notify])
+
+  const handleAddSuggestion = useCallback(
+    (entry: CatalogEntry) => {
+      const today = new Date()
+      const saved: Hackathon = {
+        id: makeId('hm'),
+        name: entry.name,
+        organizer: entry.organizer,
+        mode: entry.mode,
+        location: entry.location,
+        startDate: toISODate(addDays(today, entry.start)),
+        endDate: toISODate(addDays(today, entry.end)),
+        deadline: toISODate(addDays(today, entry.deadline)),
+        status: 'Idea',
+        prize: entry.prize,
+        teamSize: 3,
+        themes: entry.themes,
+        notes: entry.blurb,
+        website: entry.website,
+        favorite: false,
+        createdAt: new Date().toISOString(),
+        team: [],
+        tasks: [],
+        submission: { repo: '', demo: '', video: '' },
+      }
+      setEvents((previous) => [saved, ...previous])
+      setDetailId(saved.id)
+      notify(`${entry.name} is on your board.`)
+    },
+    [notify],
+  )
+
+  const toggleTask = useCallback((eventId: string, taskId: string) => {
+    setEvents((previous) =>
+      previous.map((event) =>
+        event.id === eventId
+          ? {
+              ...event,
+              tasks: event.tasks.map((task) =>
+                task.id === taskId ? { ...task, done: !task.done } : task,
+              ),
+            }
+          : event,
+      ),
+    )
+  }, [])
+
+  const toggleFavorite = useCallback((id: string) => {
+    setEvents((previous) =>
+      previous.map((event) =>
+        event.id === id ? { ...event, favorite: !event.favorite } : event,
+      ),
+    )
+  }, [])
+
+  const handleSearch = useCallback(
+    (value: string) => {
+      setSearch(value)
+      if (value && view !== 'hackathons') navigate('hackathons')
+    },
+    [navigate, view],
+  )
+
+  useEffect(() => {
+    const handleKey = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement
+      const isTyping =
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.tagName === 'SELECT' ||
+        target.isContentEditable
+
+      if (isTyping || detailId || editorOpen || dataOpen || sidebarOpen) return
+
+      if (event.key === '/') {
+        event.preventDefault()
+        document.getElementById('global-search')?.focus()
+      }
+
+      if (event.key.toLowerCase() === 'n' && !event.metaKey && !event.ctrlKey) {
+        event.preventDefault()
+        openNew()
+      }
+    }
+
+    document.addEventListener('keydown', handleKey)
+    return () => document.removeEventListener('keydown', handleKey)
+  }, [detailId, editorOpen, dataOpen, sidebarOpen, openNew])
+
+  const selectedEvent = detailId
+    ? events.find((event) => event.id === detailId) ?? null
+    : null
+  const editingEvent = editingId
+    ? events.find((event) => event.id === editingId) ?? null
+    : null
+
+  const upcomingDeadlines = [...events]
+    .filter(
+      (event) =>
+        daysUntil(event.deadline) >= 0 && !['Won', 'Completed'].includes(event.status),
+    )
+    .sort((a, b) => daysUntil(a.deadline) - daysUntil(b.deadline))
+  const nextDeadline = upcomingDeadlines[0] ?? null
+  const dateLabel = new Date().toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  })
+
+  return (
+    <div className="app-shell">
+      <Sidebar
+        view={view}
+        eventCount={events.length}
+        nextDeadline={nextDeadline}
+        isOpen={sidebarOpen}
+        onNavigate={navigate}
+        onAdd={openNew}
+        onOpenEvent={openEvent}
+        onOpenData={openData}
+        userName={userName}
+        onClose={() => setSidebarOpen(false)}
+      />
+
+      <div className="main-shell">
+        <Topbar
+          dateLabel={dateLabel}
+          eventCount={events.length}
+          search={search}
+          deadlines={upcomingDeadlines}
+          onSearch={handleSearch}
+          onMenuOpen={() => setSidebarOpen(true)}
+          onOpenEvent={openEvent}
+          onOpenCalendar={() => navigate('calendar')}
+          theme={theme}
+          userName={userName}
+          onOpenProfile={openData}
+          onToggleTheme={() => setTheme((current) => (current === 'dark' ? 'light' : 'dark'))}
+        />
+
+        <main className="main-content">
+          {view === 'overview' && (
+            <OverviewView
+              events={events}
+              userName={userName}
+              onOpen={openEvent}
+              onAdd={openNew}
+              onToggleFavorite={toggleFavorite}
+              onNavigate={navigate}
+            />
+          )}
+          {view === 'hackathons' && (
+            <HackathonsView
+              events={events}
+              search={search}
+              onSearch={setSearch}
+              onOpen={openEvent}
+              onAdd={openNew}
+              onToggleFavorite={toggleFavorite}
+              onNavigate={navigate}
+            />
+          )}
+          {view === 'calendar' && (
+            <CalendarView events={events} onOpen={openEvent} onAdd={openNew} />
+          )}
+          {view === 'insights' && <InsightsView events={events} onOpen={openEvent} />}
+          {view === 'nearby' && (
+            <FinderView
+              events={events}
+              onAddSuggestion={handleAddSuggestion}
+              onOpen={openEvent}
+            />
+          )}
+          {view === 'suggest' && (
+            <SuggestView
+              events={events}
+              onAddSuggestion={handleAddSuggestion}
+              onOpen={openEvent}
+              onAdd={openNew}
+            />
+          )}
+        </main>
+
+        <footer className="app-footer">
+          <span>
+            <Sparkles size={13} /> Made for good ideas and slightly ambitious weekends.
+          </span>
+          <span>Saved quietly on this device.</span>
+        </footer>
+      </div>
+
+      {editorOpen ? (
+        <EditorDrawer
+          key={editingId ?? 'new'}
+          initial={editingEvent}
+          onClose={closeDrawer}
+          onSave={handleSave}
+        />
+      ) : dataOpen ? (
+        <DataDrawer
+          events={events}
+          userName={userName}
+          onNameChange={handleNameChange}
+          onClose={closeDrawer}
+          onImport={handleImport}
+          onReset={handleReset}
+        />
+      ) : selectedEvent ? (
+        <DetailDrawer
+          event={selectedEvent}
+          onClose={closeDrawer}
+          onEdit={openEdit}
+          onDelete={handleDelete}
+          onToggleFavorite={toggleFavorite}
+          onToggleTask={toggleTask}
+        />
+      ) : null}
+
+      <TimerWidget />
+
+      {toast && (
+        <div className={`toast toast--${toastTone}`} role="status" aria-live="polite">
+          <span className="toast__icon" aria-hidden="true">
+            {toastTone === 'warning' ? (
+              <AlertTriangle size={13} strokeWidth={2.6} />
+            ) : (
+              <Check size={14} strokeWidth={3} />
+            )}
+          </span>
+          {toast}
+          {undo && (
+            <button className="toast__action" onClick={restoreDeleted}>
+              Undo
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}

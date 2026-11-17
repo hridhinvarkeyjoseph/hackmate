@@ -1,0 +1,367 @@
+/* ------------------------------------------------------------
+   Dark mode — deep forest, same pastel accents
+   ------------------------------------------------------------ */
+
+html[data-theme='dark'] {
+  --bg: #0c1815;
+  --surface: #132420;
+  --surface-soft: #162a25;
+  --ink: #e6f4ee;
+  --ink-soft: #bcd3ca;
+  --muted: #8aa39a;
+  --muted-light: #6d8880;
+  --line: #213732;
+  --line-strong: #2c473f;
+  --mint-50: #0f211c;
+  --mint-100: #163029;
+  --mint-200: #1b3a31;
+  --mint-300: #285445;
+  --mint-400: #3f8a70;
+  --mint-500: #5fbf9d;
+  --mint-600: #7fd6b5;
+  --forest: #e9f7f0;
+  --forest-soft: #cfe9dd;
+  --gold-100: #2a2416;
+  --gold-200: #3a3119;
+  --gold-300: #4a3d1f;
+  --gold-ink: #f0d79a;
+  --sky-100: #12262c;
+  --sky-200: #17333b;
+  --sky-300: #1f4753;
+  --sky-ink: #a8dced;
+  --lilac-100: #1d1a2b;
+  --lilac-200: #262238;
+  --lilac-300: #373152;
+  --lilac-ink: #c9bff0;
+  --rose-100: #2a1919;
+  --rose-200: #3a2222;
+  --rose-ink: #f0b3ae;
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.4), 0 18px 46px -28px rgba(0, 0, 0, 0.65);
+  --shadow-lift: 0 2px 5px rgba(0, 0, 0, 0.45), 0 26px 52px -26px rgba(0, 0, 0, 0.7);
+  --shadow-float: 0 8px 16px -8px rgba(0, 0, 0, 0.5), 0 30px 70px -30px rgba(0, 0, 0, 0.75);
+}
+
+html[data-theme='dark'] body {
+  background:
+    radial-gradient(920px 660px at 5% -9%, rgba(28, 74, 60, 0.55) 0%, transparent 62%),
+    radial-gradient(780px 560px at 103% 0%, rgba(74, 62, 26, 0.28) 0%, transparent 58%),
+    radial-gradient(780px 640px at 50% 116%, rgba(20, 46, 60, 0.42) 0%, transparent 64%),
+    var(--bg);
+}
+
+html[data-theme='dark'] body::before {
+  opacity: 0.16;
+}
+
+html[data-theme='dark'] ::selection {
+  background: #2a5a49;
+  color: #eafff6;
+}
+
+/* surfaces */
+html[data-theme='dark'] .sidebar,
+html[data-theme='dark'] .hack-card,
+html[data-theme='dark'] .deadline-card,
+html[data-theme='dark'] .calendar-card,
+html[data-theme='dark'] .horizon-card,
+html[data-theme='dark'] .insight-card,
+html[data-theme='dark'] .hall-card,
+html[data-theme='dark'] .suggest-card,
+html[data-theme='dark'] .next-steps-card,
+html[data-theme='dark'] .finder-row,
+html[data-theme='dark'] .finder-locator,
+html[data-theme='dark'] .notifications-popover,
+html[data-theme='dark'] .timer__panel,
+html[data-theme='dark'] .empty-panel,
+html[data-theme='dark'] .new-hack-tile,
+html[data-theme='dark'] .month-snapshot,
+html[data-theme='dark'] .next-up,
+html[data-theme='dark'] .win-strip {
+  background: var(--surface);
+  border-color: var(--line);
+}
+
+html[data-theme='dark'] .sidebar {
+  background: linear-gradient(180deg, #162a24 0%, #12231e 60%, #10201c 100%);
+}
+
+html[data-theme='dark'] .drawer {
+  background: linear-gradient(180deg, #14251f 0%, #10201c 100%);
+  border-left-color: var(--line);
+}
+
+html[data-theme='dark'] .month-snapshot {
+  background: linear-gradient(160deg, #17352c 0%, #12271f 100%);
+}
+
+html[data-theme='dark'] .next-up {
+  background: linear-gradient(150deg, #173a2e 0%, #123027 55%, #10241f 100%);
+}
+
+html[data-theme='dark'] .stat-card--mint {
+  background: linear-gradient(160deg, #14322a 0%, #112722 100%);
+}
+
+html[data-theme='dark'] .stat-card--cream {
+  background: linear-gradient(160deg, #302a18 0%, #251f12 100%);
+}
+
+html[data-theme='dark'] .stat-card--sky {
+  background: linear-gradient(160deg, #122a33 0%, #10222a 100%);
+}
+
+html[data-theme='dark'] .stat-card--lilac {
+  background: linear-gradient(160deg, #23203a 0%, #1a182b 100%);
+}
+
+html[data-theme='dark'] .calendar-cell {
+  background: rgba(19, 36, 31, 0.92);
+  border-color: var(--line);
+}
+
+html[data-theme='dark'] .calendar-cell.is-weekend {
+  background: rgba(16, 32, 27, 0.94);
+}
+
+html[data-theme='dark'] .calendar-cell.is-outside {
+  background: rgba(13, 26, 22, 0.9);
+}
+
+html[data-theme='dark'] .calendar-cell.is-today {
+  background:
+    radial-gradient(100% 100% at 80% 0%, rgba(60, 130, 105, 0.28) 0%, transparent 60%),
+    #13322a;
+}
+
+/* controls */
+html[data-theme='dark'] .icon-button,
+html[data-theme='dark'] .btn-secondary,
+html[data-theme='dark'] .btn-quiet,
+html[data-theme='dark'] .city-chip,
+html[data-theme='dark'] .timer__preset,
+html[data-theme='dark'] .link-row a,
+html[data-theme='dark'] .tag,
+html[data-theme='dark'] .filter-tab,
+html[data-theme='dark'] .inline-search,
+html[data-theme='dark'] .select-wrap,
+html[data-theme='dark'] .global-search {
+  background: #172b25;
+  border-color: var(--line);
+  color: var(--ink-soft);
+}
+
+html[data-theme='dark'] .empty-panel__icon,
+html[data-theme='dark'] .detail-item__icon,
+html[data-theme='dark'] .tag--muted {
+  background: #1a3129;
+  color: var(--mint-600);
+}
+
+html[data-theme='dark'] .btn-primary {
+  background: linear-gradient(140deg, #4fae8c 0%, #3f9d7e 100%);
+  color: #06231c;
+}
+
+html[data-theme='dark'] .btn-primary:hover {
+  background: linear-gradient(140deg, #5fbf9d 0%, #46a988 100%);
+}
+
+html[data-theme='dark'] .btn-cream,
+html[data-theme='dark'] .btn-cream-dark {
+  background: #e9f7f0;
+  color: #0c2a22;
+}
+
+html[data-theme='dark'] .nav-item.is-active {
+  background: linear-gradient(135deg, #1d3d33 0%, #193328 100%);
+  border-color: #24493c;
+  color: #eafff6;
+}
+
+html[data-theme='dark'] .nav-count {
+  background: #1d3a31;
+  color: var(--mint-600);
+}
+
+html[data-theme='dark'] .sidebar__profile,
+html[data-theme='dark'] .app-footer,
+html[data-theme='dark'] .data-foot,
+html[data-theme='dark'] .section-heading,
+html[data-theme='dark'] .calendar-card__head,
+html[data-theme='dark'] .calendar-card__footer {
+  border-color: var(--line);
+}
+
+html[data-theme='dark'] input,
+html[data-theme='dark'] select,
+html[data-theme='dark'] textarea,
+html[data-theme='dark'] .repeater__row input,
+html[data-theme='dark'] .date-input {
+  background: #14261f;
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+html[data-theme='dark'] input::placeholder,
+html[data-theme='dark'] textarea::placeholder {
+  color: #6c867d;
+}
+
+html[data-theme='dark'] .task-check {
+  background: #122019;
+  border-color: var(--line-strong);
+}
+
+html[data-theme='dark'] .task-check.is-done {
+  background: var(--mint-500);
+  border-color: var(--mint-500);
+  color: #06231c;
+}
+
+html[data-theme='dark'] .hack-card__tasks,
+html[data-theme='dark'] .team-chip,
+html[data-theme='dark'] .suggest-card__reason,
+html[data-theme='dark'] .data-note {
+  background: #1a3129;
+}
+
+html[data-theme='dark'] .tag {
+  background: #172b25;
+}
+
+html[data-theme='dark'] .toast {
+  background: #1d3a31;
+  color: #eafff6;
+}
+
+html[data-theme='dark'] .drawer-scrim,
+html[data-theme='dark'] .sidebar-scrim {
+  background: rgba(4, 12, 10, 0.62);
+}
+
+html[data-theme='dark'] .next-step__dot {
+  background: var(--mint-500);
+}
+
+/* second pass: literal-coloured components */
+html[data-theme='dark'] .topbar {
+  background: linear-gradient(180deg, #102420 0%, #0e1f1b 100%);
+  border-color: var(--line);
+}
+
+html[data-theme='dark'] .topbar__date,
+html[data-theme='dark'] .topbar__count {
+  color: var(--muted);
+}
+
+html[data-theme='dark'] .sidebar-deadline {
+  background: linear-gradient(160deg, #1b3a30 0%, #142c25 100%);
+  border-color: var(--line);
+}
+
+html[data-theme='dark'] .sidebar-deadline__name,
+html[data-theme='dark'] .sidebar-deadline__heading {
+  color: #eafff6;
+}
+
+html[data-theme='dark'] .sidebar-deadline__date {
+  color: #a9c3b9;
+}
+
+html[data-theme='dark'] .countdown-block {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #eafff6;
+}
+
+html[data-theme='dark'] .countdown-block__label,
+html[data-theme='dark'] .countdown-block__numbers strong,
+html[data-theme='dark'] .countdown-block__numbers small,
+html[data-theme='dark'] .countdown-block__numbers span {
+  color: #eafff6;
+}
+
+html[data-theme='dark'] .next-up__meta,
+html[data-theme='dark'] .next-up__meta span,
+html[data-theme='dark'] .next-up__date-note {
+  color: #cfe9dd;
+}
+
+html[data-theme='dark'] .next-up__tags span,
+html[data-theme='dark'] .next-up__mode {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.16);
+  color: #e6fbf2;
+}
+
+html[data-theme='dark'] .stat-card__label,
+html[data-theme='dark'] .stat-card__note {
+  color: #a9c3b9;
+}
+
+html[data-theme='dark'] .stat-card__icon {
+  background: rgba(255, 255, 255, 0.08);
+  color: #d7f2e6;
+}
+
+html[data-theme='dark'] .date-tile {
+  background: #1c342c;
+  border-color: var(--line);
+  color: #eafff6;
+}
+
+html[data-theme='dark'] .date-tile strong,
+html[data-theme='dark'] .date-tile small,
+html[data-theme='dark'] .deadline-row__copy strong,
+html[data-theme='dark'] .deadline-row__copy small {
+  color: #dff6ea;
+}
+
+html[data-theme='dark'] .deadline-row__copy small,
+html[data-theme='dark'] .horizon-item__copy small {
+  color: #8aa39a;
+}
+
+html[data-theme='dark'] .days-chip {
+  background: #1d3a31;
+  color: #a9e8cd;
+}
+
+html[data-theme='dark'] .days-chip--urgent {
+  background: #3a2222;
+  color: #f0b3ae;
+}
+
+html[data-theme='dark'] .btn-cream,
+html[data-theme='dark'] .btn-cream-dark,
+html[data-theme='dark'] .next-up__actions .btn-cream {
+  background: #e9f7f0;
+  border-color: #e9f7f0;
+  color: #0c2a22;
+}
+
+html[data-theme='dark'] .topbar__avatar {
+  background: #1d3a31;
+  color: #eafff6;
+}
+
+html[data-theme='dark'] .count-chip {
+  background: #1d3a31;
+  border-color: var(--line);
+  color: #a9e8cd;
+}
+
+html[data-theme='dark'] .count-chip--soft {
+  background: #172b25;
+  color: #8aa39a;
+}
+
+html[data-theme='dark'] .next-up__eyebrow {
+  color: #dff6ea;
+}
+
+html[data-theme='dark'] .timer__fab {
+  background: #182e27;
+  border-color: var(--line-strong);
+  color: #eafff6;
+}
