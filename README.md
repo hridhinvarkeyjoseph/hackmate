@@ -1,63 +1,80 @@
 # hackmate.
 
-A calm, pastel-mint home for every hackathon you build — track ideas, deadlines, submissions and wins in one soft, eye-friendly dashboard.
+**Find the hackathon worth your weekend, then actually ship for it.**
 
-![Pastel mint interface](https://img.shields.io/badge/ui-pastel%20mint-b9efd9?style=flat-square&labelColor=123c32)
+Students miss hackathons because listings are scattered, deadlines slip, and nobody knows if a trip is worth it. Hackmate pulls open hackathons into one place, tells you **Go, Maybe or Skip** with a reason, and turns your pick into a day-by-day plan.
 
-## What's inside
+![Near me ranks real hackathons with Go, Maybe and Skip](docs/screenshots/near-me.png)
 
-- **Overview** — headline stats, a "next up" hero with live countdown, deadline radar, and recent hackathon cards.
-- **My hackathons** — search, status filters, sorting, favorites, and inline add/edit/delete.
-- **Calendar** — month grid with colour-coded events, month navigation, and a horizon list of what's coming.
-- **Insights** — six-month activity chart, status donut, format split, theme cloud and podium reel.
-- **Your data** — export a JSON backup, import one, or reset to the sample season (sidebar → *Your data*).
+## What makes it different
 
-Everything is local-first: your hackathons live in `localStorage` under `hackmate.events.v1`, with a set of sample events loaded on first run. Saves are validated on load, so a hand-edited or half-written file can never blank out a view.
+- **Go / Maybe / Skip on real listings.** Each open hackathon from Unstop and Devfolio is judged on distance, how well it matches your themes, and clashes with your calendar. Every verdict shows its reasons.
+- **Sprint planner.** One tap spreads a proven hackathon routine across the days you really have.
+- **Submission readiness score.** A live percentage and the three things that would raise it most.
+- **Portfolio export.** Turns what you shipped into a Markdown page for GitHub or a resume.
+- **Private by design.** No account and no server. Your data stays on your device.
+- **Works everywhere.** Installable web app, offline support, and an Android app with system reminders.
 
-## Getting started
+| Plan the sprint | Find what fits | On your phone |
+| --- | --- | --- |
+| ![Sprint plan and readiness score](docs/screenshots/sprint-plan.png) | ![Suggested hackathons](docs/screenshots/ideas.png) | ![Mobile layout](docs/screenshots/mobile.png) |
+
+## Also inside
+
+Overview with countdowns, a searchable board, calendar with `.ics` export, insights, focus timer, deadline reminders, JSON backup and restore, dark mode, and keyboard shortcuts (`N` new, `/` search, `Esc` close).
+
+## How it works
+
+```mermaid
+flowchart LR
+  A[Unstop and Devfolio] -->|daily GitHub Action| B[live-hackathons.json]
+  B --> C[Validate and keep open listings]
+  D[Your board and location] --> E[Ranking engine]
+  C --> E
+  E --> F[Go / Maybe / Skip]
+  F -->|Track it| D
+```
+
+The logic lives in small, tested modules in `src/lib`:
+
+| Module | Job |
+| --- | --- |
+| `live.ts` | Validates feed data and selects open listings |
+| `finder.ts` | Locates venues, measures distance, ranks listings |
+| `planner.ts` | Builds the sprint plan |
+| `readiness.ts` | Scores submission readiness |
+| `portfolio.ts` | Writes the Markdown portfolio |
+| `reminders.ts` | Schedules deadline reminders |
+| `platform.ts` | Handles file export on web and Android |
+
+**Stack:** React 19, TypeScript, Vite, Capacitor, Vitest, GitHub Actions, hand-written CSS.
+
+## Run it
 
 ```bash
 npm install
 npm run dev
 ```
 
-Then open the printed local URL (usually <http://localhost:5173>).
+| Command | What it does |
+| --- | --- |
+| `npm test` | Runs the unit tests |
+| `npm run build` | Type-checks and builds to `dist/` |
+| `npm run preview` | Serves the production build |
+| `npm run fetch:hackathons` | Refreshes the listings |
 
-To run the production build — which also registers the service worker, so the installed app opens without a network connection:
+Build the Android app with JDK 21 and the Android SDK:
 
 ```bash
 npm run build
-npm run preview
+npx cap sync android
+cd android && ./gradlew assembleDebug
 ```
 
-## Install it
+## Honest limits
 
-The app ships a web manifest and icons, so Chrome/Edge can install it as a standalone window (*Install Hackmate* from the address bar), and iOS can add it to the home screen. The service worker precaches the shell and keeps the last-seen assets, so the installed app still opens offline.
+- Listings come from public, unofficial endpoints, so a source can change or go down. The app then keeps the last saved list.
+- Devfolio publishes no sign-up cutoff, so Hackmate shows its start date and says so.
+- Distances are straight-line estimates, and venues outside the known city list get a Maybe.
 
-## Scripts
-
-| Command | Description |
-| --- | --- |
-| `npm run dev` | Start the Vite dev server |
-| `npm run build` | Type-check and build to `dist/` |
-| `npm run preview` | Preview the production build |
-
-## Keyboard shortcuts
-
-| Key | Action |
-| --- | --- |
-| `N` | Add a new hackathon |
-| `/` | Focus the global search |
-| `Esc` | Close the open panel |
-| `Tab` | Cycle inside an open panel (focus is trapped, then returned) |
-| `Enter` / `Space` | Open the focused hackathon card |
-
-## Stack
-
-React 19 · TypeScript · Vite · hand-written CSS · lucide-react icons · Fraunces + DM Sans.
-
-## Notes
-
-- Data is stored only in your browser. Clearing site data resets the sample set; export a backup first if it matters.
-- The layout adapts from wide desktop down to a 390 px phone, with a slide-out sidebar below 1024 px and a collapsible search field on small screens.
-- Motion respects `prefers-reduced-motion`.
+See [the demo script](docs/DEMO.md) for a two-minute walkthrough.
