@@ -185,8 +185,11 @@ export function rankListings(
   events: Hackathon[],
   place: Place,
   today = toISODate(new Date()),
+  interests: string[] = [],
 ): RankedListing[] {
-  const myThemes = new Set(events.flatMap((event) => event.themes.map((theme) => theme.toLowerCase())))
+  const myThemes = new Set(
+    [...events.flatMap((event) => event.themes), ...interests].map((theme) => theme.toLowerCase()),
+  )
   const tracked = new Set(events.map((event) => listingKey(event.name)))
   const active = events.filter(isActive)
 

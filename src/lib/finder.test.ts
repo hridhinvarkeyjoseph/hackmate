@@ -84,6 +84,17 @@ describe('rankListings', () => {
     expect(result.verdict).toBe('maybe')
   })
 
+  it('counts interests chosen at setup as themes', () => {
+    const result = rankListings(
+      [listing({ location: 'Kolkata', themes: ['AI', 'Design'] })],
+      [],
+      bengaluru,
+      today,
+      ['ai', 'design'],
+    )
+    expect(result[0].verdict).toBe('maybe')
+  })
+
   it('treats an unknown venue as maybe', () => {
     expect(rank(listing({ location: 'India' }))).toMatchObject({ verdict: 'maybe', km: null })
   })

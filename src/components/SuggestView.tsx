@@ -7,15 +7,16 @@ import type { LiveEvent } from '../lib/live'
 type Props = {
   events: Hackathon[]
   listings: LiveEvent[]
+  interests: string[]
   onTrack: (listing: LiveEvent) => void
   onOpen: (event: Hackathon) => void
   onAdd: () => void
 }
 
-export function SuggestView({ events, listings, onTrack, onOpen, onAdd }: Props) {
-  const suggestions = suggestListings(listings, events)
+export function SuggestView({ events, listings, interests, onTrack, onOpen, onAdd }: Props) {
+  const suggestions = suggestListings(listings, events, 4, interests)
   const steps = nextSteps(events)
-  const themes = [...new Set(events.flatMap((event) => event.themes))].slice(0, 6)
+  const themes = [...new Set([...interests, ...events.flatMap((event) => event.themes)])].slice(0, 6)
 
   return (
     <div className="view view--suggest">

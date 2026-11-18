@@ -4,12 +4,14 @@ import type { Hackathon } from '../types'
 import { daysBetween, formatDate, formatRange, toISODate } from '../lib/date'
 import { cityPresets, distanceKm, rankListings, type Place, type Verdict } from '../lib/finder'
 import { sources } from '../lib/catalog'
+import { savePlace } from '../lib/profile'
 import { deadlineIsEstimated, type LiveEvent } from '../lib/live'
 
 type Props = {
   events: Hackathon[]
   listings: LiveEvent[]
   listingsAt: string
+  interests: string[]
   onTrack: (listing: LiveEvent) => void
 }
 
@@ -44,7 +46,7 @@ function freshness(generatedAt: string): string {
   return `Listings updated ${days} day${days === 1 ? '' : 's'} ago.`
 }
 
-export function FinderView({ events, listings, listingsAt, onTrack }: Props) {
+export function FinderView({ events, listings, listingsAt, interests, onTrack }: Props) {
   const [place, setPlace] = useState<Place | null>(readPlace)
   const [error, setError] = useState<string | null>(null)
   const [locating, setLocating] = useState(false)
@@ -55,11 +57,7 @@ export function FinderView({ events, listings, listingsAt, onTrack }: Props) {
     setPlace(next)
     setError(null)
     setVisible(PAGE_SIZE)
-    try {
-      window.localStorage.setItem(LOCATION_KEY, JSON.stringify(next))
-    } catch {
-      // Location is a convenience; failing to persist it is harmless.
-    }
+    savePlace(next)
   }
 
   const detect = () => {
@@ -89,8 +87,8 @@ export function FinderView({ events, listings, listingsAt, onTrack }: Props) {
   }
 
   const results = useMemo(
-    () => (place ? rankListings(listings, events, place) : []),
-    [listings, events, place],
+    () => (place ? rankListings(listings, events, place, undefined, interests) : []),
+    [listings, events, place, interests],
   )
   const counts = useMemo(() => {
     const totals: Record<Filter, number> = { all: results.length, go: 0, maybe: 0, skip: 0 }

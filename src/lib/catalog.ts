@@ -8,6 +8,7 @@ export function suggestListings(
   listings: LiveEvent[],
   events: Hackathon[],
   limit = 4,
+  interests: string[] = [],
 ): Suggestion[] {
   const themeCounts = new Map<string, number>()
   const modeCounts = new Map<string, number>()
@@ -17,6 +18,11 @@ export function suggestListings(
       themeCounts.set(key, (themeCounts.get(key) ?? 0) + 1)
     }
     modeCounts.set(event.mode, (modeCounts.get(event.mode) ?? 0) + 1)
+  }
+
+  for (const interest of interests) {
+    const key = interest.toLowerCase()
+    themeCounts.set(key, (themeCounts.get(key) ?? 0) + 1)
   }
 
   const favouriteMode = [...modeCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0]
@@ -31,7 +37,7 @@ export function suggestListings(
         (listing.mode === favouriteMode ? 2 : 0)
       const reason =
         matched.length > 0
-          ? `Because you keep choosing ${matched.slice(0, 2).join(' and ')}`
+          ? `Fits your interest in ${matched.slice(0, 2).join(' and ')}`
           : listing.mode === favouriteMode
             ? `Another ${listing.mode.toLowerCase()} one, like most of your picks`
             : 'Something a little different from your usual'

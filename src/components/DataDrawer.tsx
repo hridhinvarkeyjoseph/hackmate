@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { Award, Bell, BellOff, CalendarPlus, Database, Download, RotateCcw, ShieldCheck, Upload } from 'lucide-react'
+import { Award, Bell, BellOff, CalendarPlus, Database, Download, Eraser, RotateCcw, ShieldCheck, Upload } from 'lucide-react'
 import type { Hackathon } from '../types'
 import { downloadEvents, parseImport } from '../lib/storage'
 import { downloadICS } from '../lib/ics'
@@ -7,20 +7,35 @@ import { disableReminders, enableReminders, getReminderState } from '../lib/remi
 import { buildPortfolio } from '../lib/portfolio'
 import { saveTextFile } from '../lib/platform'
 import { Drawer } from './Drawer'
+import { InterestPicker } from './InterestPicker'
 
 type Props = {
   events: Hackathon[]
   userName: string
+  interests: string[]
   onNameChange: (name: string) => void
+  onInterestsChange: (interests: string[]) => void
+  onClear: () => void
   onClose: () => void
   onImport: (events: Hackathon[]) => void
   onReset: () => void
 }
 
-export function DataDrawer({ events, userName, onNameChange, onClose, onImport, onReset }: Props) {
+export function DataDrawer({
+  events,
+  userName,
+  interests,
+  onNameChange,
+  onInterestsChange,
+  onClear,
+  onClose,
+  onImport,
+  onReset,
+}: Props) {
   const fileRef = useRef<HTMLInputElement>(null)
   const [error, setError] = useState<string | null>(null)
   const [confirmReset, setConfirmReset] = useState(false)
+  const [confirmClear, setConfirmClear] = useState(false)
   const [fileName, setFileName] = useState<string | null>(null)
   const [remindersOn, setRemindersOn] = useState(() => getReminderState().enabled)
 
@@ -70,6 +85,11 @@ export function DataDrawer({ events, userName, onNameChange, onClose, onImport, 
           onChange={(event) => onNameChange(event.target.value)}
         />
       </label>
+
+      <div className="field data-name">
+        <span className="field__label">Your interests</span>
+        <InterestPicker selected={interests} onChange={onInterestsChange} />
+      </div>
 
       <div className="data-list">
         <section className="data-row">
@@ -182,6 +202,30 @@ export function DataDrawer({ events, userName, onNameChange, onClose, onImport, 
           >
             {remindersOn ? 'Turn off' : 'Turn on'}
           </button>
+        </section>
+
+        <section className="data-row">
+          <span className="data-row__icon data-row__icon--rose">
+            <Eraser size={17} />
+          </span>
+          <div className="data-row__copy">
+            <strong>Clear my board</strong>
+            <small>Removes every hackathon so you can start empty.</small>
+          </div>
+          {confirmClear ? (
+            <span className="data-confirm">
+              <button className="btn btn-danger btn--compact" onClick={onClear}>
+                Yes, clear
+              </button>
+              <button className="btn btn-quiet btn--compact" onClick={() => setConfirmClear(false)}>
+                Cancel
+              </button>
+            </span>
+          ) : (
+            <button className="btn btn-quiet btn--compact" onClick={() => setConfirmClear(true)}>
+              Clear
+            </button>
+          )}
         </section>
 
         <section className="data-row data-row--danger">

@@ -174,10 +174,15 @@ export async function downloadEvents(events: Hackathon[]): Promise<void> {
   }
 }
 
+/** True while the board holds nothing the user added. */
+export function isSampleBoard(events: Hackathon[]): boolean {
+  const samples = new Set(sampleHackathons.map((event) => event.id))
+  return events.every((event) => samples.has(event.id))
+}
+
 /** True when the user has added their own data and has no recent export. */
 export function backupDue(events: Hackathon[]): boolean {
-  const samples = new Set(sampleHackathons.map((event) => event.id))
-  if (events.every((event) => samples.has(event.id))) return false
+  if (isSampleBoard(events)) return false
   try {
     const last = window.localStorage.getItem(BACKUP_KEY)
     if (!last) return true

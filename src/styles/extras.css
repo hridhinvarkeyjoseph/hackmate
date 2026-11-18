@@ -1310,3 +1310,43 @@ html[data-theme='dark'] .new-hack-tile__icon {
 .crash-screen p {
   color: var(--muted);
 }
+
+/* --- welcome and interests --- */
+.interest-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.welcome h2 {
+  margin-top: 6px;
+  color: var(--forest);
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.welcome > p {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.welcome__group {
+  margin-top: 20px;
+}
+
+.welcome__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.welcome__actions .btn {
+  justify-content: center;
+  width: 100%;
+}

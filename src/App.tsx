@@ -3,9 +3,9 @@ import { AlertTriangle, Check, Sparkles } from 'lucide-react'
 import type { Hackathon, Theme, ViewName } from './types'
 import { sampleHackathons } from './data'
 import { daysUntil } from './lib/date'
-import { backupDue, loadEvents, makeId, saveEvents } from './lib/storage'
+import { backupDue, isSampleBoard, loadEvents, makeId, saveEvents } from './lib/storage'
 import { runReminders } from './lib/reminders'
-import { loadProfile, saveProfile } from './lib/profile'
+import { hasOnboarded, loadProfile, markOnboarded, savePlace, saveProfile } from './lib/profile'
 import { rememberTrigger } from './lib/focus'
 import { Sidebar } from './components/Sidebar'
 import { Topbar } from './components/Topbar'
@@ -19,6 +19,7 @@ import { DataDrawer } from './components/DataDrawer'
 import { SuggestView } from './components/SuggestView'
 import { FinderView } from './components/FinderView'
 import { TimerWidget } from './components/TimerWidget'
+import { WelcomeDrawer, type WelcomeChoices } from './components/WelcomeDrawer'
 import { useLiveFeed } from './lib/useLiveFeed'
 import { planSprint } from './lib/planner'
 import { listingToHackathon, type LiveEvent } from './lib/live'
@@ -36,6 +37,8 @@ export default function App() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   })
   const [userName, setUserName] = useState(() => loadProfile().name)
+  const [interests, setInterests] = useState(() => loadProfile().interests)
+  const [welcomeOpen, setWelcomeOpen] = useState(() => !hasOnboarded() && isSampleBoard(events))
   const [view, setView] = useState<ViewName>('overview')
   const [search, setSearch] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -109,7 +112,28 @@ export default function App() {
 
   const handleNameChange = useCallback((name: string) => {
     setUserName(name)
-    saveProfile({ name: name.trim() })
+    saveProfile({ ...loadProfile(), name: name.trim() })
+  }, [])
+
+  const handleInterestsChange = useCallback((next: string[]) => {
+    setInterests(next)
+    saveProfile({ ...loadProfile(), interests: next })
+  }, [])
+
+  const skipWelcome = useCallback(() => {
+    markOnboarded()
+    setWelcomeOpen(false)
+  }, [])
+
+  const finishWelcome = useCallback((choices: WelcomeChoices) => {
+    markOnboarded()
+    saveProfile({ name: choices.name, interests: choices.interests })
+    setUserName(choices.name)
+    setInterests(choices.interests)
+    if (choices.place) savePlace(choices.place)
+    setEvents([])
+    setWelcomeOpen(false)
+    setView('nearby')
   }, [])
 
   const navigate = useCallback((nextView: ViewName) => {
@@ -215,6 +239,12 @@ export default function App() {
     setDataOpen(false)
     setView('overview')
     notify('A fresh sample season, ready to explore.')
+  }, [notify])
+
+  const handleClear = useCallback(() => {
+    setEvents([])
+    setDataOpen(false)
+    notify('Your board is clear.')
   }, [notify])
 
   const handleTrackListing = useCallback(
@@ -382,6 +412,7 @@ export default function App() {
               events={events}
               listings={listings}
               listingsAt={generatedAt}
+              interests={interests}
               onTrack={handleTrackListing}
             />
           )}
@@ -389,6 +420,7 @@ export default function App() {
             <SuggestView
               events={events}
               listings={listings}
+              interests={interests}
               onTrack={handleTrackListing}
               onOpen={openEvent}
               onAdd={openNew}
@@ -404,7 +436,9 @@ export default function App() {
         </footer>
       </div>
 
-      {editorOpen ? (
+      {welcomeOpen ? (
+        <WelcomeDrawer initialName={userName} onFinish={finishWelcome} onSkip={skipWelcome} />
+      ) : editorOpen ? (
         <EditorDrawer
           key={editingId ?? 'new'}
           initial={editingEvent}
@@ -415,7 +449,10 @@ export default function App() {
         <DataDrawer
           events={events}
           userName={userName}
+          interests={interests}
           onNameChange={handleNameChange}
+          onInterestsChange={handleInterestsChange}
+          onClear={handleClear}
           onClose={closeDrawer}
           onImport={handleImport}
           onReset={handleReset}
