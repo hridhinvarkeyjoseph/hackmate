@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "fetch:hackathons": "node scripts/fetch-hackathons.mjs",
-    "test": "vitest run --dir src",
+    "test": "vitest run src scripts",
     "lint": "eslint .",
     "test:e2e": "playwright test"
   },
