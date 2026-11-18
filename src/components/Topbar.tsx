@@ -70,7 +70,7 @@ export function Topbar({
             {dateLabel}
           </span>
           <span className="topbar__divider" />
-          <span className="topbar__count">{eventCount} events in your orbit</span>
+          <span className="topbar__count">{eventCount} {eventCount === 1 ? 'event' : 'events'} in your orbit</span>
         </div>
       </div>
 
