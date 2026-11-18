@@ -13,7 +13,7 @@ createRoot(document.getElementById('root')!).render(
 // dev server would fight Vite's hot reload.
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {
+    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch(() => {
       // Installability is a bonus — the app works fine without it.
     })
   })

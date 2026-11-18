@@ -1,5 +1,6 @@
-const CACHE = 'hackmate-v1'
-const SHELL = ['/', '/index.html', '/favicon.svg', '/site.webmanifest']
+const CACHE = 'hackmate-v2'
+// Relative, so the app also works from a sub-path such as GitHub Pages.
+const SHELL = ['./', './index.html', './favicon.svg', './site.webmanifest']
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -32,8 +33,24 @@ self.addEventListener('fetch', (event) => {
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request).catch(() =>
-        caches.match('/index.html').then((cached) => cached || caches.match('/')),
+        caches.match('./index.html').then((cached) => cached || caches.match('./')),
       ),
+    )
+    return
+  }
+
+  // Listings go stale, so try the network first and keep a copy for offline.
+  if (url.pathname.endsWith('/live-hackathons.json')) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            const copy = response.clone()
+            caches.open(CACHE).then((cache) => cache.put(request, copy))
+          }
+          return response
+        })
+        .catch(() => caches.match(request)),
     )
     return
   }
