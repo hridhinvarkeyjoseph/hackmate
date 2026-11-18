@@ -1557,3 +1557,11 @@ a.detail-plan {
 .finder-stale {
   margin: 0 0 12px;
 }
+
+.data-import {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}

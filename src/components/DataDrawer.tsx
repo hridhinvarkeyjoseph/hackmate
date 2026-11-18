@@ -37,6 +37,7 @@ export function DataDrawer({
   const [confirmReset, setConfirmReset] = useState(false)
   const [confirmClear, setConfirmClear] = useState(false)
   const [fileName, setFileName] = useState<string | null>(null)
+  const [pendingImport, setPendingImport] = useState<Hackathon[] | null>(null)
   const [remindersOn, setRemindersOn] = useState(() => getReminderState().enabled)
 
   const handleFile = async (file: File) => {
@@ -49,7 +50,7 @@ export function DataDrawer({
       }
       setError(null)
       setFileName(file.name)
-      onImport(imported)
+      setPendingImport(imported)
     } catch {
       setError('That file could not be read. Try exporting again and picking the new file.')
     }
@@ -264,8 +265,21 @@ export function DataDrawer({
           {error}
         </p>
       )}
-      {fileName && !error && (
-        <p className="data-note">Imported from {fileName}.</p>
+      {pendingImport && !error && (
+        <div className="data-note data-import" role="alert">
+          <p>
+            Replace your {events.length} {events.length === 1 ? 'hackathon' : 'hackathons'} with{' '}
+            {pendingImport.length} from {fileName}?
+          </p>
+          <span className="data-confirm">
+            <button className="btn btn-danger btn--compact" onClick={() => onImport(pendingImport)}>
+              Replace
+            </button>
+            <button className="btn btn-quiet btn--compact" onClick={() => setPendingImport(null)}>
+              Cancel
+            </button>
+          </span>
+        </div>
       )}
 
       <div className="data-foot">
