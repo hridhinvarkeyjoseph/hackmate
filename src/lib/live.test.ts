@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isOpenListing, normalizeListing, openListings, parseFeed, type LiveEvent } from './live'
+import { isOpenListing, listingToHackathon, normalizeListing, openListings, parseFeed, type LiveEvent } from './live'
 
 const listing = (overrides: Partial<LiveEvent> = {}): LiveEvent => ({
   id: 'a',
@@ -68,5 +68,18 @@ describe('openListings', () => {
       today,
     )
     expect(result.map((event) => event.id)).toEqual(['soon', 'late'])
+  })
+})
+
+describe('listingToHackathon', () => {
+  it('keeps real dates and starts as an idea', () => {
+    const saved = listingToHackathon(listing(), 'hm-1', '2026-11-18T00:00:00.000Z')
+    expect(saved).toMatchObject({ id: 'hm-1', status: 'Idea', deadline: '2026-11-25' })
+    expect(saved.website).toBe('https://example.com/a')
+  })
+
+  it('warns when the deadline is only an estimate', () => {
+    const saved = listingToHackathon(listing({ source: 'devfolio' }), 'hm-2', '')
+    expect(saved.notes).toContain('confirm the real cutoff')
   })
 })

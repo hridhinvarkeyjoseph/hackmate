@@ -1,4 +1,4 @@
-import type { Mode } from '../types'
+import type { Hackathon, Mode } from '../types'
 import { toISODate } from './date'
 
 /** Shape written by scripts/fetch-hackathons.mjs. */
@@ -104,3 +104,32 @@ export function openListings(events: LiveEvent[], today = toISODate(new Date()))
 
 /** Devfolio publishes no sign-up cutoff, so its start date stands in for one. */
 export const deadlineIsEstimated = (event: LiveEvent): boolean => event.source === 'devfolio'
+
+/** Copies a listing onto the user's board, ready to plan around. */
+export function listingToHackathon(event: LiveEvent, id: string, createdAt: string): Hackathon {
+  const origin = event.source ? `Found on ${event.source[0].toUpperCase()}${event.source.slice(1)}.` : ''
+  const caution = deadlineIsEstimated(event)
+    ? ' The deadline is the start date, so confirm the real cutoff on the listing.'
+    : ''
+  return {
+    id,
+    name: event.name,
+    organizer: event.organizer,
+    mode: event.mode,
+    location: event.location,
+    startDate: event.startDate,
+    endDate: event.endDate,
+    deadline: event.deadline,
+    status: 'Idea',
+    prize: event.prize,
+    teamSize: 3,
+    themes: event.themes,
+    notes: `${origin}${caution}`.trim(),
+    website: event.applyUrl,
+    favorite: false,
+    createdAt,
+    team: [],
+    tasks: [],
+    submission: { repo: '', demo: '', video: '' },
+  }
+}
