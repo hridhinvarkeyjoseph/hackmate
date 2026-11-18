@@ -1521,3 +1521,7 @@ a.detail-plan {
   display: flex;
   text-decoration: none;
 }
+
+.main-content:focus {
+  outline: none;
+}

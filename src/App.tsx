@@ -24,6 +24,7 @@ import { PitchDrawer } from './components/PitchDrawer'
 import { WelcomeDrawer, type WelcomeChoices } from './components/WelcomeDrawer'
 import { useLiveFeed } from './lib/useLiveFeed'
 import { planSprint } from './lib/planner'
+import { hashForView, pageTitle, viewFromHash } from './lib/routes'
 import { readSharedPlan, sharePlan } from './lib/share'
 import { listingKey } from './lib/live'
 import { listingToHackathon, type LiveEvent } from './lib/live'
@@ -46,7 +47,7 @@ export default function App() {
   const [welcomeOpen, setWelcomeOpen] = useState(
     () => !sharedPlan && !hasOnboarded() && isSampleBoard(events),
   )
-  const [view, setView] = useState<ViewName>('overview')
+  const [view, setView] = useState<ViewName>(() => viewFromHash(window.location.hash))
   const [search, setSearch] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [detailId, setDetailId] = useState<string | null>(null)
@@ -118,6 +119,25 @@ export default function App() {
     return () => window.clearInterval(timer)
   }, [events])
 
+  // Each page has its own address, so Back, refresh and shared links all work.
+  const showView = useCallback((nextView: ViewName) => {
+    setView(nextView)
+    const hash = hashForView(nextView)
+    if (hash !== window.location.hash) {
+      window.history.pushState(null, '', hash || window.location.pathname + window.location.search)
+    }
+  }, [])
+
+  useEffect(() => {
+    const syncView = () => setView(viewFromHash(window.location.hash))
+    window.addEventListener('popstate', syncView)
+    return () => window.removeEventListener('popstate', syncView)
+  }, [])
+
+  useEffect(() => {
+    document.title = pageTitle(view)
+  }, [view])
+
   const handleNameChange = useCallback((name: string) => {
     setUserName(name)
     saveProfile({ ...loadProfile(), name: name.trim() })
@@ -141,14 +161,18 @@ export default function App() {
     if (choices.place) savePlace(choices.place)
     setEvents([])
     setWelcomeOpen(false)
-    setView('nearby')
-  }, [])
+    showView('nearby')
+  }, [showView])
 
-  const navigate = useCallback((nextView: ViewName) => {
-    setView(nextView)
-    setSidebarOpen(false)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [])
+  const navigate = useCallback(
+    (nextView: ViewName) => {
+      showView(nextView)
+      setSidebarOpen(false)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      document.getElementById('main-content')?.focus({ preventScroll: true })
+    },
+    [showView],
+  )
 
   const openNew = useCallback(() => {
     rememberTrigger()
@@ -232,22 +256,22 @@ export default function App() {
     (imported: Hackathon[]) => {
       setEvents(imported)
       setDataOpen(false)
-      setView('hackathons')
+      showView('hackathons')
       notify(
         imported.length === 0
           ? 'Backup was empty. Your board is clear.'
           : `Imported ${imported.length} ${imported.length === 1 ? 'hackathon' : 'hackathons'}.`,
       )
     },
-    [notify],
+    [notify, showView],
   )
 
   const handleReset = useCallback(() => {
     setEvents(sampleHackathons)
     setDataOpen(false)
-    setView('overview')
+    showView('overview')
     notify('A fresh sample season, ready to explore.')
-  }, [notify])
+  }, [notify, showView])
 
   const closeSharedPlan = useCallback(() => {
     setSharedPlan(null)
@@ -445,7 +469,7 @@ export default function App() {
           onToggleTheme={() => setTheme((current) => (current === 'dark' ? 'light' : 'dark'))}
         />
 
-        <main className="main-content">
+        <main className="main-content" id="main-content" tabIndex={-1}>
           {view === 'overview' && (
             <OverviewView
               events={events}

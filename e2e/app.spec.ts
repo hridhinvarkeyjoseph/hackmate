@@ -136,6 +136,22 @@ test('the pitch builder writes and keeps a script', async ({ page }) => {
   )
 })
 
+test('pages have their own links and Back works', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Explore with sample data' }).click()
+  await page.getByRole('button', { name: 'Calendar', exact: true }).click()
+  await page.getByRole('button', { name: 'Insights', exact: true }).click()
+  await expect(page).toHaveURL(/#\/insights$/)
+  await expect(page).toHaveTitle('Insights · Hackmate')
+
+  await page.goBack()
+  await expect(page).toHaveURL(/#\/calendar$/)
+  await expect(page.getByRole('heading', { name: /Your months/ })).toBeVisible()
+
+  await page.reload()
+  await expect(page.getByRole('heading', { name: /Your months/ })).toBeVisible()
+})
+
 test('a visitor can explore the sample data', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Explore with sample data' }).click()
