@@ -17,12 +17,14 @@ import {
   MonitorPlay,
   Video,
   ListChecks,
+  Gauge,
   Wand2,
   UserRound,
 } from 'lucide-react'
 import type { Hackathon } from '../types'
 import { daysUntil, deadlineLabel, formatDate, formatRange, parseDate, startOfDay } from '../lib/date'
 import { planSprint } from '../lib/planner'
+import { assessReadiness } from '../lib/readiness'
 import { StatusBadge } from './StatusBadge'
 import { Drawer } from './Drawer'
 
@@ -53,6 +55,7 @@ export function DetailDrawer({
   const isFuture = starts > today
   const startIn = daysUntil(event.startDate)
   const endIn = daysUntil(event.endDate)
+  const readiness = assessReadiness(event)
   const canPlan =
     !['Won', 'Completed'].includes(event.status) &&
     planSprint(event, new Date(), () => '').length > 0
@@ -150,6 +153,35 @@ export function DetailDrawer({
       </div>
 
       {highlight}
+
+      {!['Won', 'Completed'].includes(event.status) && (
+        <section className="detail-progress readiness">
+          <div className="detail-progress__head">
+            <span>
+              <Gauge size={15} /> Submission readiness
+            </span>
+            <strong>{readiness.score}%</strong>
+          </div>
+          <div
+            className="readiness__bar"
+            role="progressbar"
+            aria-label="Submission readiness"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={readiness.score}
+          >
+            <span style={{ width: `${readiness.score}%` }} />
+          </div>
+          <p className="readiness__label">{readiness.label}</p>
+          {readiness.missing.length > 0 && (
+            <ul className="readiness__missing">
+              {readiness.missing.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
 
       {event.tasks.length > 0 && (
         <section className="detail-progress">

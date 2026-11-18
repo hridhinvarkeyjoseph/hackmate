@@ -120,6 +120,42 @@
   margin-top: 12px;
 }
 
+.readiness__bar {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+.readiness__bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--mint-600);
+  transition: width 240ms ease;
+}
+
+.readiness__label {
+  margin: 8px 0 0;
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.readiness__missing {
+  margin: 4px 0 0;
+  padding-left: 16px;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .readiness__bar span {
+    transition: none;
+  }
+}
+
 .detail-tasks {
   display: flex;
   flex-direction: column;
