@@ -17,6 +17,7 @@ import {
   MonitorPlay,
   Video,
   ListChecks,
+  Share2,
   Gauge,
   Wand2,
   UserRound,
@@ -36,6 +37,7 @@ type Props = {
   onToggleFavorite: (id: string) => void
   onToggleTask: (eventId: string, taskId: string) => void
   onPlanSprint: (eventId: string) => void
+  onShare: (event: Hackathon) => void
 }
 
 export function DetailDrawer({
@@ -46,6 +48,7 @@ export function DetailDrawer({
   onToggleFavorite,
   onToggleTask,
   onPlanSprint,
+  onShare,
 }: Props) {
   const [confirmDelete, setConfirmDelete] = useState(false)
   const today = startOfDay(new Date())
@@ -215,6 +218,10 @@ export function DetailDrawer({
           <Wand2 size={15} /> {event.tasks.length > 0 ? 'Fill in my sprint plan' : 'Plan my sprint'}
         </button>
       )}
+
+      <button className="btn btn-quiet detail-plan" onClick={() => onShare(event)}>
+        <Share2 size={15} /> Share plan with my team
+      </button>
 
       <div className="detail-grid">
         <div className="detail-item">

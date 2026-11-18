@@ -19,9 +19,12 @@ import { DataDrawer } from './components/DataDrawer'
 import { SuggestView } from './components/SuggestView'
 import { FinderView } from './components/FinderView'
 import { TimerWidget } from './components/TimerWidget'
+import { JoinPlanDrawer } from './components/JoinPlanDrawer'
 import { WelcomeDrawer, type WelcomeChoices } from './components/WelcomeDrawer'
 import { useLiveFeed } from './lib/useLiveFeed'
 import { planSprint } from './lib/planner'
+import { readSharedPlan, sharePlan } from './lib/share'
+import { listingKey } from './lib/live'
 import { listingToHackathon, type LiveEvent } from './lib/live'
 
 export default function App() {
@@ -38,7 +41,10 @@ export default function App() {
   })
   const [userName, setUserName] = useState(() => loadProfile().name)
   const [interests, setInterests] = useState(() => loadProfile().interests)
-  const [welcomeOpen, setWelcomeOpen] = useState(() => !hasOnboarded() && isSampleBoard(events))
+  const [sharedPlan, setSharedPlan] = useState(() => readSharedPlan(window.location.hash))
+  const [welcomeOpen, setWelcomeOpen] = useState(
+    () => !sharedPlan && !hasOnboarded() && isSampleBoard(events),
+  )
   const [view, setView] = useState<ViewName>('overview')
   const [search, setSearch] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -241,6 +247,42 @@ export default function App() {
     notify('A fresh sample season, ready to explore.')
   }, [notify])
 
+  const closeSharedPlan = useCallback(() => {
+    setSharedPlan(null)
+    window.history.replaceState(null, '', window.location.pathname + window.location.search)
+  }, [])
+
+  const joinSharedPlan = useCallback(() => {
+    if (!sharedPlan) return
+    markOnboarded()
+    const existing = events.find((event) => listingKey(event.name) === listingKey(sharedPlan.name))
+    if (existing) {
+      setDetailId(existing.id)
+      notify('This hackathon is already on your board.')
+    } else {
+      // A teammate's first visit starts with their real board, not the samples.
+      setEvents((previous) => [sharedPlan, ...(isSampleBoard(previous) ? [] : previous)])
+      setDetailId(sharedPlan.id)
+      notify(`${sharedPlan.name} is on your board.`)
+    }
+    closeSharedPlan()
+  }, [closeSharedPlan, events, notify, sharedPlan])
+
+  const handleSharePlan = useCallback(
+    (event: Hackathon) => {
+      sharePlan(event)
+        .then((result) => {
+          if (result === 'copied') notify('Link copied. Send it to your team.')
+        })
+        .catch((error: unknown) => {
+          if ((error as Error)?.name !== 'AbortError') {
+            notify('That link could not be shared.', 'warning')
+          }
+        })
+    },
+    [notify],
+  )
+
   const handleClear = useCallback(() => {
     setEvents([])
     setDataOpen(false)
@@ -436,7 +478,9 @@ export default function App() {
         </footer>
       </div>
 
-      {welcomeOpen ? (
+      {sharedPlan ? (
+        <JoinPlanDrawer plan={sharedPlan} onJoin={joinSharedPlan} onClose={closeSharedPlan} />
+      ) : welcomeOpen ? (
         <WelcomeDrawer initialName={userName} onFinish={finishWelcome} onSkip={skipWelcome} />
       ) : editorOpen ? (
         <EditorDrawer
@@ -466,6 +510,7 @@ export default function App() {
           onToggleFavorite={toggleFavorite}
           onToggleTask={toggleTask}
           onPlanSprint={handlePlanSprint}
+          onShare={handleSharePlan}
         />
       ) : null}
 
