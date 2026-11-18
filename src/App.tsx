@@ -427,6 +427,7 @@ export default function App() {
             <OverviewView
               events={events}
               listings={listings}
+              interests={interests}
               userName={userName}
               onOpen={openEvent}
               onAdd={openNew}

@@ -23,11 +23,13 @@ import {
   timeGreeting,
 } from '../lib/date'
 import { HackathonCard } from './HackathonCard'
-import { firstName } from '../lib/profile'
+import { firstName, loadPlace } from '../lib/profile'
+import { rankListings } from '../lib/finder'
 
 type Props = {
   events: Hackathon[]
   listings: LiveEvent[]
+  interests: string[]
   userName: string
   onOpen: (event: Hackathon) => void
   onAdd: () => void
@@ -67,25 +69,18 @@ function StatCard({
   )
 }
 
-export function OverviewView({ events, listings, userName, onOpen, onAdd, onToggleFavorite, onNavigate }: Props) {
+export function OverviewView({ events, listings, interests, userName, onOpen, onAdd, onToggleFavorite, onNavigate }: Props) {
   const [now, setNow] = useState(() => new Date())
 
-  const savedPlace = (() => {
-    try {
-      const raw = window.localStorage.getItem('hackmate.place.v1')
-      return raw ? (JSON.parse(raw).label as string) : ''
-    } catch {
-      return ''
-    }
-  })()
-  const city = savedPlace.split(',')[0].trim()
-  const nearbyLive = listings
-    .filter(
-      (entry) =>
-        entry.mode === 'Online' ||
-        (city !== '' && entry.location.toLowerCase().includes(city.toLowerCase())),
-    )
-    .slice(0, 6)
+  const place = loadPlace()
+  const city = place ? place.label.replace(/^Near /, '').split(',')[0].trim() : ''
+  const nearbyLive = (
+    place
+      ? rankListings(listings, events, place, undefined, interests)
+          .filter((result) => result.verdict === 'go')
+          .map((result) => result.listing)
+      : listings.filter((entry) => entry.mode === 'Online')
+  ).slice(0, 6)
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 60_000)
@@ -221,12 +216,12 @@ export function OverviewView({ events, listings, userName, onOpen, onAdd, onTogg
           <div className="section-heading section-heading--tight">
             <div>
               <div className="section-heading__row">
-                <h2>{city ? `Near ${city}` : 'Open right now'}</h2>
+                <h2>{city ? `Worth it from ${city}` : 'Open right now'}</h2>
                 <span className="count-chip count-chip--soft">{nearbyLive.length}</span>
               </div>
               <p>
                 {city
-                  ? `Real listings in ${city}, plus online ones you can join from anywhere.`
+                  ? 'Hackathons with a Go verdict for you right now.'
                   : 'Real online listings you can join from anywhere. Set your city in Near me for local ones.'}
               </p>
             </div>
@@ -337,9 +332,9 @@ export function OverviewView({ events, listings, userName, onOpen, onAdd, onTogg
                 <Sparkles size={13} /> A little room to dream
               </span>
               <h2>Your next adventure is waiting.</h2>
-              <p>Add a hackathon and we&apos;ll keep the dates, details, and butterflies in order.</p>
-              <button className="btn btn-cream" onClick={onAdd}>
-                <Plus size={16} /> Add your first hackathon
+              <p>Pick one you can still join, and we&apos;ll keep the dates and plan in order.</p>
+              <button className="btn btn-cream" onClick={() => onNavigate('nearby')}>
+                <MapPin size={16} /> Find hackathons for me
               </button>
             </div>
           )}
