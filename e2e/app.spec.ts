@@ -78,19 +78,62 @@ test('a tracked hackathon becomes a saved plan', async ({ page }) => {
 
   const details = page.getByRole('dialog', { name: 'Open AI Jam details' })
   const score = details.getByRole('progressbar', { name: 'Submission readiness' })
-  await expect(score).toHaveAttribute('aria-valuenow', '5')
+  await expect(score).toHaveAttribute('aria-valuenow', '0')
 
   await details.getByRole('button', { name: 'Plan my sprint' }).click()
   await expect(details.locator('.detail-tasks li')).toHaveCount(9)
-  await expect(score).toHaveAttribute('aria-valuenow', '10')
+  await expect(score).toHaveAttribute('aria-valuenow', '5')
 
   await details.getByRole('button', { name: 'Mark task done' }).first().click()
-  await expect(score).toHaveAttribute('aria-valuenow', '13')
+  await expect(score).toHaveAttribute('aria-valuenow', '8')
 
   await page.reload()
   await expect(page.getByRole('dialog')).toHaveCount(0)
   await page.getByRole('button', { name: /My hackathons/ }).click()
   await expect(page.getByRole('heading', { name: 'Open AI Jam' })).toBeVisible()
+})
+
+test('search and quick filters narrow the list', async ({ page }) => {
+  await finishSetup(page)
+  await page.getByRole('searchbox', { name: 'Filter open hackathons' }).fill('bengaluru')
+  await expect(page.locator('.finder-row h3')).toHaveText(['Local Build Day'])
+  await page.getByRole('button', { name: 'Online only' }).click()
+  await expect(page.getByText('Nothing matches these filters')).toBeVisible()
+})
+
+test('planned work appears in todays focus', async ({ page }) => {
+  await finishSetup(page)
+  await row(page, 'Open AI Jam').getByRole('button', { name: 'Track it' }).click()
+  await page.getByRole('button', { name: 'Plan my sprint' }).click()
+  await page.keyboard.press('Escape')
+  await page.getByRole('button', { name: 'Overview', exact: true }).click()
+
+  const focus = page.getByRole('region', { name: "Today's focus" })
+  await expect(focus.getByText('Read the rules and judging criteria')).toBeVisible()
+  await focus.getByRole('button', { name: /Mark done: Read the rules/ }).click()
+  await expect(focus.getByText('Read the rules and judging criteria')).toHaveCount(0)
+})
+
+test('the pitch builder writes and keeps a script', async ({ page }) => {
+  await finishSetup(page)
+  await row(page, 'Open AI Jam').getByRole('button', { name: 'Track it' }).click()
+  await page.getByRole('button', { name: 'Write my pitch' }).click()
+
+  const pitch = page.getByRole('dialog', { name: 'Pitch for Open AI Jam' })
+  await pitch.getByLabel('Project name').fill('Hackmate')
+  await pitch.getByLabel('What does your project do?').fill('it plans your sprint')
+  const script = pitch.getByRole('region', { name: 'Your pitch script' })
+  await expect(script).toContainText('we built Hackmate: it plans your sprint.')
+  await pitch.getByRole('button', { name: 'Copy script' }).click()
+  await expect(pitch.getByRole('button', { name: 'Copied' })).toBeVisible()
+
+  await page.keyboard.press('Escape')
+  const details = page.getByRole('dialog', { name: 'Open AI Jam details' })
+  await expect(details.getByRole('button', { name: 'Edit my pitch' })).toBeVisible()
+  await expect(details.getByRole('link', { name: 'Add to Google Calendar' })).toHaveAttribute(
+    'href',
+    /calendar\.google\.com/,
+  )
 })
 
 test('a visitor can explore the sample data', async ({ page }) => {
