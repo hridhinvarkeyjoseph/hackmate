@@ -967,6 +967,12 @@
 }
 
 /* --- near me filters --- */
+.finder-locator__clear {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+}
+
 .finder-filters {
   display: flex;
   flex-wrap: wrap;
