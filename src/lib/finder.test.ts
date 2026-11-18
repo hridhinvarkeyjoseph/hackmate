@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { sampleHackathons } from '../data'
 import type { Hackathon } from '../types'
 import type { LiveEvent } from './live'
-import { cityPresets, distanceKm, locateVenue, rankListings } from './finder'
+import { cityPresets, distanceKm, filterRanked, locateVenue, rankListings } from './finder'
 
 const today = '2026-11-18'
 const bengaluru = cityPresets.find((city) => city.label === 'Bengaluru, IN')!
@@ -143,5 +143,35 @@ describe('rankListings', () => {
       today,
     )
     expect(results.map((result) => result.listing.id)).toEqual(['first', 'later', 'skip'])
+  })
+})
+
+describe('filterRanked', () => {
+  const ranked = rankListings(
+    [
+      listing({ id: 'ai', name: 'AI Jam', mode: 'Online', location: 'Online', themes: ['AI'] }),
+      listing({ id: 'soon', name: 'Quick Build', deadline: '2026-11-20' }),
+    ],
+    [],
+    bengaluru,
+    today,
+  )
+  const none = { query: '', onlineOnly: false, closingSoon: false }
+  const ids = (filters: typeof none) =>
+    filterRanked(ranked, filters, today).map((result) => result.listing.id)
+
+  it('keeps everything with no filters', () => {
+    expect(ids(none)).toHaveLength(2)
+  })
+
+  it('searches names, places and themes, ignoring case', () => {
+    expect(ids({ ...none, query: 'quick' })).toEqual(['soon'])
+    expect(ids({ ...none, query: 'BENGALURU' })).toEqual(['soon'])
+    expect(ids({ ...none, query: 'ai online' })).toEqual(['ai'])
+  })
+
+  it('applies the quick filters', () => {
+    expect(ids({ ...none, onlineOnly: true })).toEqual(['ai'])
+    expect(ids({ ...none, closingSoon: true })).toEqual(['soon'])
   })
 })

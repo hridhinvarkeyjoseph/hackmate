@@ -1,8 +1,15 @@
 import { useMemo, useState } from 'react'
-import { ArrowUpRight, Check, Compass, MapPin, Navigation, Plus, X } from 'lucide-react'
+import { ArrowUpRight, Check, Compass, MapPin, Navigation, Plus, Search, X } from 'lucide-react'
 import type { Hackathon } from '../types'
 import { daysBetween, formatDate, formatRange, toISODate } from '../lib/date'
-import { cityPresets, distanceKm, rankListings, type Place, type Verdict } from '../lib/finder'
+import {
+  cityPresets,
+  distanceKm,
+  filterRanked,
+  rankListings,
+  type Place,
+  type Verdict,
+} from '../lib/finder'
 import { sources } from '../lib/catalog'
 import { forgetPlace, loadPlace, savePlace } from '../lib/profile'
 import { deadlineIsEstimated, type LiveEvent } from '../lib/live'
@@ -41,6 +48,9 @@ export function FinderView({ events, listings, listingsAt, interests, onTrack }:
   const [changingCity, setChangingCity] = useState(false)
   const [filter, setFilter] = useState<Filter>('all')
   const [visible, setVisible] = useState(PAGE_SIZE)
+  const [query, setQuery] = useState('')
+  const [onlineOnly, setOnlineOnly] = useState(false)
+  const [closingSoon, setClosingSoon] = useState(false)
 
   const save = (next: Place) => {
     setPlace(next)
@@ -76,9 +86,13 @@ export function FinderView({ events, listings, listingsAt, interests, onTrack }:
     )
   }
 
-  const results = useMemo(
+  const ranked = useMemo(
     () => (place ? rankListings(listings, events, place, undefined, interests) : []),
     [listings, events, place, interests],
+  )
+  const results = useMemo(
+    () => filterRanked(ranked, { query, onlineOnly, closingSoon }),
+    [ranked, query, onlineOnly, closingSoon],
   )
   const counts = useMemo(() => {
     const totals: Record<Filter, number> = { all: results.length, go: 0, maybe: 0, skip: 0 }
@@ -175,7 +189,7 @@ export function FinderView({ events, listings, listingsAt, interests, onTrack }:
             </button>
           </div>
         </div>
-      ) : results.length === 0 ? (
+      ) : ranked.length === 0 ? (
         <div className="empty-panel">
           <span className="empty-panel__icon">
             <Compass size={24} />
@@ -185,6 +199,42 @@ export function FinderView({ events, listings, listingsAt, interests, onTrack }:
         </div>
       ) : (
         <>
+          <div className="finder-tools">
+            <label className="finder-search">
+              <Search size={15} aria-hidden="true" />
+              <input
+                type="search"
+                value={query}
+                placeholder="Search name, city or theme"
+                aria-label="Search hackathons"
+                onChange={(event) => {
+                  setQuery(event.target.value)
+                  setVisible(PAGE_SIZE)
+                }}
+              />
+            </label>
+            <button
+              className={`city-chip ${onlineOnly ? 'is-active' : ''}`}
+              aria-pressed={onlineOnly}
+              onClick={() => {
+                setOnlineOnly((value) => !value)
+                setVisible(PAGE_SIZE)
+              }}
+            >
+              Online only
+            </button>
+            <button
+              className={`city-chip ${closingSoon ? 'is-active' : ''}`}
+              aria-pressed={closingSoon}
+              onClick={() => {
+                setClosingSoon((value) => !value)
+                setVisible(PAGE_SIZE)
+              }}
+            >
+              This week
+            </button>
+          </div>
+
           <div className="finder-filters" role="group" aria-label="Filter by verdict">
             {FILTERS.map(({ id, label }) => (
               <button
@@ -245,6 +295,12 @@ export function FinderView({ events, listings, listingsAt, interests, onTrack }:
               </article>
             ))}
           </div>
+
+          {filtered.length === 0 && (
+            <p className="finder-none" role="status">
+              Nothing matches these filters. Try removing one.
+            </p>
+          )}
 
           {filtered.length > visible && (
             <button

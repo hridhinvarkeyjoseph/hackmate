@@ -239,3 +239,33 @@ export function rankListings(
         (a.km ?? 0) - (b.km ?? 0),
     )
 }
+
+export type ListingFilters = {
+  query: string
+  onlineOnly: boolean
+  closingSoon: boolean
+}
+
+const CLOSING_SOON_DAYS = 7
+
+/** Narrows ranked results by what the user typed and the quick filters. */
+export function filterRanked(
+  results: RankedListing[],
+  { query, onlineOnly, closingSoon }: ListingFilters,
+  today = toISODate(new Date()),
+): RankedListing[] {
+  const terms = query.toLowerCase().split(/\s+/).filter(Boolean)
+  return results.filter(({ listing }) => {
+    if (onlineOnly && listing.mode !== 'Online') return false
+    if (
+      closingSoon &&
+      daysBetween(parseDate(today), parseDate(listing.deadline)) > CLOSING_SOON_DAYS
+    ) {
+      return false
+    }
+    const haystack = [listing.name, listing.organizer, listing.location, ...listing.themes]
+      .join(' ')
+      .toLowerCase()
+    return terms.every((term) => haystack.includes(term))
+  })
+}

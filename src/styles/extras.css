@@ -967,6 +967,48 @@
 }
 
 /* --- near me filters --- */
+.finder-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.finder-search {
+  display: flex;
+  flex: 1 1 240px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+}
+
+.finder-search input {
+  width: 100%;
+  min-height: 38px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+}
+
+.finder-search:focus-within {
+  border-color: var(--mint-600);
+  box-shadow: 0 0 0 2px var(--mint-100);
+}
+
+.finder-none {
+  margin: 18px 0;
+  color: var(--muted);
+  text-align: center;
+}
+
 .finder-locator__clear {
   position: absolute;
   top: 14px;
