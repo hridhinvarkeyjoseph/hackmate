@@ -29,7 +29,7 @@ Students miss hackathons because listings are scattered, deadlines slip, and nob
 
 ## Also inside
 
-Overview with countdowns, a searchable board, calendar with `.ics` export, insights, focus timer, deadline reminders, JSON backup and restore, dark mode, and keyboard shortcuts (`N` new, `/` search, `Esc` close).
+Page links with Back support, offline and out-of-date notices, overview with countdowns, a searchable board, calendar with `.ics` export, insights, focus timer, deadline reminders, JSON backup and restore, dark mode, and keyboard shortcuts (`N` new, `/` search, `Esc` close).
 
 ## How it works
 
@@ -92,4 +92,4 @@ cd android && ./gradlew assembleDebug
 - Devfolio publishes no sign-up cutoff, so Hackmate shows its start date and says so.
 - Distances are straight-line estimates, and venues outside the known city list get a Maybe.
 
-See [the demo script](docs/DEMO.md) for a two-minute walkthrough.
+See [the demo script](docs/DEMO.md) for a two-minute walkthrough. Want to help? Read [the contributing guide](CONTRIBUTING.md).
