@@ -161,6 +161,56 @@ test('the app says when it is offline', async ({ page, context }) => {
   await expect(page.getByText("You're offline")).toHaveCount(0)
 })
 
+test('importing a backup asks before replacing anything', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Explore with sample data' }).click()
+  await page.getByRole('button', { name: /Your data/ }).click()
+  await page.locator('input[type="file"]').setInputFiles({
+    name: 'backup.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify({ events: [{ name: 'Restored Hack' }] })),
+  })
+
+  const question = page.getByRole('alert').filter({ hasText: 'from backup.json' })
+  await question.getByRole('button', { name: 'Cancel' }).click()
+  await expect(question).toHaveCount(0)
+  await page.keyboard.press('Escape')
+  await expect(page.getByText('Minty Build Weekend').first()).toBeVisible()
+
+  await page.getByRole('button', { name: /Your data/ }).click()
+  await page.locator('input[type="file"]').setInputFiles({
+    name: 'backup.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify({ events: [{ name: 'Restored Hack' }] })),
+  })
+  await page.getByRole('button', { name: 'Replace' }).click()
+  await expect(page.getByRole('heading', { name: 'Restored Hack' })).toBeVisible()
+})
+
+test('dark mode passes automated accessibility checks', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' })
+  const scan = async () => {
+    const { violations } = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa'])
+      .analyze()
+    expect(
+      violations.flatMap((item) =>
+        item.nodes.slice(0, 8).map((node) => `${item.id}: ${node.target} ${node.any[0]?.message ?? ''}`),
+      ),
+    ).toEqual([])
+  }
+
+  await page.goto('/')
+  await scan()
+  await page.getByRole('button', { name: 'Explore with sample data' }).click()
+  await scan()
+  await page.getByRole('button', { name: 'Near me' }).click()
+  await page.getByRole('button', { name: 'Bengaluru, IN' }).click()
+  await scan()
+  await page.locator('.finder-row').first().getByRole('button', { name: 'Track it' }).click()
+  await scan()
+})
+
 test('a visitor can explore the sample data', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Explore with sample data' }).click()
