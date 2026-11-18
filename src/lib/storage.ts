@@ -24,6 +24,14 @@ export const makeId = (prefix: string): string =>
     ? `${prefix}-${crypto.randomUUID().slice(0, 8)}`
     : `${prefix}-${Math.random().toString(36).slice(2, 10)}`
 
+/** Keeps web links only, so imported data can never run script from a link. */
+export function safeUrl(value: unknown): string {
+  const url = asString(value).trim()
+  const scheme = /^([a-z][a-z0-9+.-]*):/i.exec(url)?.[1].toLowerCase()
+  if (scheme && scheme !== 'http' && scheme !== 'https') return ''
+  return url
+}
+
 const normalizeTeam = (value: unknown): TeamMember[] => {
   if (!Array.isArray(value)) return []
   return value
@@ -59,9 +67,9 @@ const normalizeTasks = (value: unknown): Task[] => {
 const normalizeSubmission = (value: unknown): Submission => {
   const raw = isRecord(value) ? value : {}
   return {
-    repo: asString(raw.repo).trim(),
-    demo: asString(raw.demo).trim(),
-    video: asString(raw.video).trim(),
+    repo: safeUrl(raw.repo),
+    demo: safeUrl(raw.demo),
+    video: safeUrl(raw.video),
   }
 }
 
@@ -100,7 +108,7 @@ function normalizeEvent(raw: unknown, index: number): Hackathon | null {
     teamSize: Number.isFinite(teamSize) && teamSize >= 1 ? Math.round(teamSize) : 1,
     themes,
     notes: asString(raw.notes),
-    website: asString(raw.website),
+    website: safeUrl(raw.website),
     favorite: raw.favorite === true,
     createdAt: asString(raw.createdAt) || new Date().toISOString(),
     team: normalizeTeam(raw.team),
