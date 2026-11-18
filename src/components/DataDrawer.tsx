@@ -1,9 +1,11 @@
 import { useRef, useState } from 'react'
-import { Bell, BellOff, CalendarPlus, Database, Download, RotateCcw, ShieldCheck, Upload } from 'lucide-react'
+import { Award, Bell, BellOff, CalendarPlus, Database, Download, RotateCcw, ShieldCheck, Upload } from 'lucide-react'
 import type { Hackathon } from '../types'
 import { downloadEvents, parseImport } from '../lib/storage'
 import { downloadICS } from '../lib/ics'
 import { disableReminders, enableReminders, getReminderState } from '../lib/reminders'
+import { buildPortfolio } from '../lib/portfolio'
+import { saveTextFile } from '../lib/platform'
 import { Drawer } from './Drawer'
 
 type Props = {
@@ -126,6 +128,28 @@ export function DataDrawer({ events, userName, onNameChange, onClose, onImport, 
             onClick={() => void downloadICS(events).catch(() => setError('The calendar file was not saved.'))}
           >
             Export .ics
+          </button>
+        </section>
+
+        <section className="data-row">
+          <span className="data-row__icon data-row__icon--sky">
+            <Award size={17} />
+          </span>
+          <div className="data-row__copy">
+            <strong>Create your portfolio</strong>
+            <small>A Markdown page of what you shipped, for GitHub or a resume.</small>
+          </div>
+          <button
+            className="btn btn-secondary btn--compact"
+            onClick={() =>
+              void saveTextFile(
+                'hackmate-portfolio.md',
+                buildPortfolio(events, userName),
+                'text/markdown;charset=utf-8',
+              ).catch(() => setError('The portfolio was not saved.'))
+            }
+          >
+            Create
           </button>
         </section>
 
