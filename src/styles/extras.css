@@ -1287,3 +1287,26 @@ html[data-theme='dark'] .new-hack-tile__icon {
   background: #f1c876;
   color: #3b2a08;
 }
+
+/* --- crash screen --- */
+.crash-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 100vh;
+  padding: 24px;
+  text-align: center;
+}
+
+.crash-screen h1 {
+  color: var(--forest);
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 500;
+}
+
+.crash-screen p {
+  color: var(--muted);
+}
