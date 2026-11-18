@@ -20,9 +20,11 @@ import { SuggestView } from './components/SuggestView'
 import { FinderView } from './components/FinderView'
 import { TimerWidget } from './components/TimerWidget'
 import type { CatalogEntry } from './lib/catalog'
+import { useLiveFeed } from './lib/useLiveFeed'
 
 export default function App() {
   const [events, setEvents] = useState<Hackathon[]>(loadEvents)
+  const { listings, generatedAt } = useLiveFeed()
   const [theme, setTheme] = useState<Theme>(() => {
     try {
       const saved = window.localStorage.getItem('hackmate.theme')
@@ -357,6 +359,7 @@ export default function App() {
           {view === 'overview' && (
             <OverviewView
               events={events}
+              listings={listings}
               userName={userName}
               onOpen={openEvent}
               onAdd={openNew}
@@ -382,6 +385,8 @@ export default function App() {
           {view === 'nearby' && (
             <FinderView
               events={events}
+              listings={listings}
+              listingsAt={generatedAt}
               onAddSuggestion={handleAddSuggestion}
               onOpen={openEvent}
             />

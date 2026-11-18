@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { ArrowUpRight, Check, Compass, MapPin, Navigation, Plus, Sparkles, X } from 'lucide-react'
 import type { Hackathon } from '../types'
 import type { CatalogEntry } from '../lib/catalog'
@@ -9,6 +9,8 @@ import type { LiveEvent } from '../lib/live'
 
 type Props = {
   events: Hackathon[]
+  listings: LiveEvent[]
+  listingsAt: string
   onAddSuggestion: (entry: CatalogEntry) => void
   onOpen: (event: Hackathon) => void
 }
@@ -28,12 +30,10 @@ const readPlace = (): Place | null => {
 
 const offset = (days: number) => toISODate(addDays(new Date(), days))
 
-export function FinderView({ events, onAddSuggestion, onOpen }: Props) {
+export function FinderView({ events, listings, listingsAt, onAddSuggestion, onOpen }: Props) {
   const [place, setPlace] = useState<Place | null>(readPlace)
   const [error, setError] = useState<string | null>(null)
   const [locating, setLocating] = useState(false)
-  const [live, setLive] = useState<LiveEvent[]>([])
-  const [liveAt, setLiveAt] = useState<string>('')
 
   const save = (next: Place) => {
     setPlace(next)
@@ -73,25 +73,8 @@ export function FinderView({ events, onAddSuggestion, onOpen }: Props) {
     )
   }
 
-  useEffect(() => {
-    let cancelled = false
-    fetch('/live-hackathons.json')
-      .then((response) => (response.ok ? response.json() : null))
-      .then((payload: { generatedAt?: string; events?: LiveEvent[] } | null) => {
-        if (cancelled || !payload?.events) return
-        setLive(payload.events)
-        setLiveAt(payload.generatedAt ?? '')
-      })
-      .catch(() => {
-        // Live data is optional; the curated shelf still works.
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
   const liveVisible = place
-    ? live.filter((entry) => (place.country === 'IN' ? true : entry.mode === 'Online'))
+    ? listings.filter((entry) => (place.country === 'IN' ? true : entry.mode === 'Online'))
     : []
 
   const results = place ? rankNearby(events, place) : []
@@ -235,10 +218,10 @@ export function FinderView({ events, onAddSuggestion, onOpen }: Props) {
             <span className="eyebrow eyebrow--small">
               <Sparkles size={12} /> Live right now
             </span>
-            <h3>Real listings, pulled from Unstop</h3>
+            <h3>Open now, soonest deadline first</h3>
             <p>
-              {liveAt
-                ? `As of ${new Date(liveAt).toLocaleDateString('en-IN', {
+              {listingsAt
+                ? `As of ${new Date(listingsAt).toLocaleDateString('en-IN', {
                     day: 'numeric',
                     month: 'short',
                     year: 'numeric',

@@ -27,6 +27,7 @@ import { firstName } from '../lib/profile'
 
 type Props = {
   events: Hackathon[]
+  listings: LiveEvent[]
   userName: string
   onOpen: (event: Hackathon) => void
   onAdd: () => void
@@ -66,24 +67,8 @@ function StatCard({
   )
 }
 
-export function OverviewView({ events, userName, onOpen, onAdd, onToggleFavorite, onNavigate }: Props) {
+export function OverviewView({ events, listings, userName, onOpen, onAdd, onToggleFavorite, onNavigate }: Props) {
   const [now, setNow] = useState(() => new Date())
-  const [live, setLive] = useState<LiveEvent[]>([])
-
-  useEffect(() => {
-    let cancelled = false
-    fetch('/live-hackathons.json')
-      .then((response) => (response.ok ? response.json() : null))
-      .then((payload: { events?: LiveEvent[] } | null) => {
-        if (!cancelled && payload?.events) setLive(payload.events)
-      })
-      .catch(() => {
-        // The overview still works without live data.
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [])
 
   const savedPlace = (() => {
     try {
@@ -94,8 +79,7 @@ export function OverviewView({ events, userName, onOpen, onAdd, onToggleFavorite
     }
   })()
   const city = savedPlace.split(',')[0].trim()
-  const nearbyLive = live
-    .filter((entry) => entry.open !== false && (!entry.endDate || daysUntil(entry.endDate) >= 0))
+  const nearbyLive = listings
     .filter(
       (entry) =>
         entry.mode === 'Online' ||
