@@ -1553,3 +1553,7 @@ a.detail-plan {
   color: var(--ink-soft);
   font-size: 13px;
 }
+
+.finder-stale {
+  margin: 0 0 12px;
+}

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { ArrowUpRight, Check, Compass, MapPin, Navigation, Plus, Search, X } from 'lucide-react'
 import type { Hackathon } from '../types'
-import { daysBetween, formatDate, formatRange, toISODate } from '../lib/date'
+import { formatDate, formatRange, toISODate } from '../lib/date'
 import {
   cityPresets,
   distanceKm,
@@ -12,7 +12,7 @@ import {
 } from '../lib/finder'
 import { sources } from '../lib/catalog'
 import { forgetPlace, loadPlace, savePlace } from '../lib/profile'
-import { deadlineIsEstimated, type LiveEvent } from '../lib/live'
+import { deadlineIsEstimated, feedAgeDays, STALE_AFTER_DAYS, type LiveEvent } from '../lib/live'
 
 type Props = {
   events: Hackathon[]
@@ -31,15 +31,6 @@ const FILTERS: Array<{ id: Filter; label: string }> = [
   { id: 'maybe', label: 'Maybe' },
   { id: 'skip', label: 'Skip' },
 ]
-
-function freshness(generatedAt: string): string {
-  if (!generatedAt) return ''
-  const updated = new Date(generatedAt)
-  if (Number.isNaN(updated.getTime())) return ''
-  const days = daysBetween(updated, new Date())
-  if (days <= 0) return 'Listings updated today.'
-  return `Listings updated ${days} day${days === 1 ? '' : 's'} ago.`
-}
 
 export function FinderView({ events, listings, listingsAt, interests, onTrack }: Props) {
   const [place, setPlace] = useState<Place | null>(loadPlace)
@@ -101,6 +92,13 @@ export function FinderView({ events, listings, listingsAt, interests, onTrack }:
   }, [results])
   const filtered = filter === 'all' ? results : results.filter((result) => result.verdict === filter)
   const today = toISODate(new Date())
+  const age = feedAgeDays(listingsAt)
+  const updated =
+    age === null
+      ? ''
+      : age === 0
+        ? 'Listings updated today.'
+        : `Listings updated ${age} day${age === 1 ? '' : 's'} ago.`
 
   return (
     <div className="view view--finder">
@@ -170,6 +168,12 @@ export function FinderView({ events, listings, listingsAt, interests, onTrack }:
       {error && (
         <p className="finder-error" role="alert">
           {error}
+        </p>
+      )}
+
+      {age !== null && age > STALE_AFTER_DAYS && (
+        <p className="offline-note finder-stale" role="status">
+          These listings are {age} days old, so check the dates on each hackathon&apos;s page.
         </p>
       )}
 
@@ -333,7 +337,7 @@ export function FinderView({ events, listings, listingsAt, interests, onTrack }:
       </section>
 
       <p className="finder-note">
-        {freshness(listingsAt)} Distances are straight-line estimates. Always check the
+        {updated} Distances are straight-line estimates. Always check the
         organizer&apos;s page before booking travel.
       </p>
     </div>

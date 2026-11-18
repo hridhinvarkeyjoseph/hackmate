@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isOpenListing, listingToHackathon, normalizeListing, openListings, parseFeed, type LiveEvent } from './live'
+import { feedAgeDays, isOpenListing, listingToHackathon, normalizeListing, openListings, parseFeed, type LiveEvent } from './live'
 
 const listing = (overrides: Partial<LiveEvent> = {}): LiveEvent => ({
   id: 'a',
@@ -96,5 +96,19 @@ describe('listingToHackathon', () => {
   it('warns when the deadline is only an estimate', () => {
     const saved = listingToHackathon(listing({ source: 'devfolio' }), 'hm-2', '')
     expect(saved.notes).toContain('confirm the real cutoff')
+  })
+})
+
+describe('feedAgeDays', () => {
+  const now = new Date(2026, 10, 18, 12)
+
+  it('counts whole days', () => {
+    expect(feedAgeDays(new Date(2026, 10, 14, 23).toISOString(), now)).toBe(4)
+  })
+
+  it('handles missing dates and clock differences', () => {
+    expect(feedAgeDays('', now)).toBeNull()
+    expect(feedAgeDays('nope', now)).toBeNull()
+    expect(feedAgeDays(new Date(2026, 10, 20).toISOString(), now)).toBe(0)
   })
 })

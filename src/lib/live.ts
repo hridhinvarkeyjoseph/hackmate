@@ -1,5 +1,5 @@
 import type { Hackathon, Mode } from '../types'
-import { toISODate } from './date'
+import { daysBetween, toISODate } from './date'
 
 /** Shape written by scripts/fetch-hackathons.mjs. */
 export type LiveEvent = {
@@ -164,4 +164,13 @@ export function listingToHackathon(event: LiveEvent, id: string, createdAt: stri
     tasks: [],
     submission: { repo: '', demo: '', video: '' },
   }
+}
+
+export const STALE_AFTER_DAYS = 3
+
+/** Whole days since the feed was built, or null when that is unknown. */
+export function feedAgeDays(generatedAt: string, now = new Date()): number | null {
+  const built = new Date(generatedAt)
+  if (!generatedAt || Number.isNaN(built.getTime())) return null
+  return Math.max(daysBetween(built, now), 0)
 }
