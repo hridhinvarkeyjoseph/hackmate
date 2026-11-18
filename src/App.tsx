@@ -440,6 +440,12 @@ export default function App() {
 
   return (
     <div className="app-shell">
+      <button
+        className="skip-link"
+        onClick={() => document.getElementById('main-content')?.focus()}
+      >
+        Skip to content
+      </button>
       <Sidebar
         view={view}
         eventCount={events.length}
