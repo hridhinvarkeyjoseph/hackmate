@@ -360,7 +360,7 @@
   }
 
   .topbar__date {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .topbar__avatar {
@@ -404,7 +404,7 @@
   }
 
   .stat-card__label {
-    font-size: 9px;
+    font-size: 12px;
   }
 
   .stat-card__icon {
@@ -413,7 +413,7 @@
   }
 
   .stat-card__note {
-    font-size: 9px;
+    font-size: 12px;
   }
 
   .next-up {
@@ -427,7 +427,7 @@
   }
 
   .next-up__meta {
-    font-size: 10.5px;
+    font-size: 12px;
   }
 
   .next-up__grid-pattern {
@@ -524,7 +524,7 @@
   }
 
   .calendar-card__head p {
-    font-size: 9.5px;
+    font-size: 12px;
   }
 
   .calendar-controls {
@@ -543,7 +543,7 @@
 
   .calendar-weekdays span {
     padding: 7px 0 8px;
-    font-size: 8px;
+    font-size: 10.5px;
   }
 
   .calendar-cell {
@@ -559,7 +559,7 @@
   .calendar-cell__date > span {
     width: 18px;
     height: 18px;
-    font-size: 9px;
+    font-size: 12px;
   }
 
   .calendar-cell__date small {
@@ -579,7 +579,7 @@
 
   .calendar-more {
     padding-left: 1px;
-    font-size: 6.5px;
+    font-size: 10.5px;
   }
 
   .calendar-footer-note {
@@ -614,7 +614,7 @@
   }
 
   .insight-stat small {
-    font-size: 8.5px;
+    font-size: 10.5px;
   }
 
   .insight-card {
@@ -754,7 +754,7 @@
   }
 
   .countdown-block__numbers small {
-    font-size: 7.5px;
+    font-size: 10.5px;
   }
 
   .stat-card__note {
@@ -770,7 +770,7 @@
   .filter-tab {
     height: 34px;
     padding: 0 9px;
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .filter-tab span {
@@ -824,7 +824,7 @@
   .calendar-cell__date > span {
     width: 16px;
     height: 16px;
-    font-size: 8px;
+    font-size: 10.5px;
   }
 
   .calendar-event {

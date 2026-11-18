@@ -111,7 +111,7 @@
 
 .stat-card__label {
   color: #648074;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -146,7 +146,7 @@
   margin-left: 5px;
   color: #6d877a;
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0;
 }
@@ -158,7 +158,7 @@
   overflow: hidden;
   margin-top: 7px;
   color: #728a7e;
-  font-size: 10.5px;
+  font-size: 12px;
   line-height: 1.35;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
@@ -257,7 +257,7 @@
   align-items: center;
   gap: 8px;
   color: #3d7662;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -272,7 +272,7 @@
   border-radius: 99px;
   background: rgba(255, 255, 255, 0.42);
   color: #46745f;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 600;
   backdrop-filter: blur(6px);
 }
@@ -300,7 +300,7 @@
   gap: 8px;
   margin-top: 12px;
   color: #567466;
-  font-size: 11.5px;
+  font-size: 12px;
 }
 
 .next-up__meta span {
@@ -325,7 +325,7 @@
   border: 1px solid rgba(255, 255, 255, 0.5);
   background: rgba(255, 255, 255, 0.31);
   color: #517965;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -354,7 +354,7 @@
   display: block;
   margin-bottom: 3px;
   color: #5c806f;
-  font-size: 8.5px;
+  font-size: 10.5px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -383,7 +383,7 @@
 
 .countdown-block__numbers small {
   color: #658173;
-  font-size: 8.5px;
+  font-size: 10.5px;
   font-weight: 600;
 }
 
@@ -406,7 +406,7 @@
   align-items: center;
   gap: 5px;
   color: #668174;
-  font-size: 9.5px;
+  font-size: 12px;
 }
 
 .next-up--empty {
@@ -504,7 +504,7 @@
 .deadline-row__copy small {
   margin-top: 1px;
   color: var(--muted-light);
-  font-size: 9.5px;
+  font-size: 12px;
 }
 
 .days-chip {
@@ -518,7 +518,7 @@
   background: var(--mint-100);
   border: 1px solid #dcefe5;
   color: #3f6d5b;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -534,7 +534,7 @@
   align-items: flex-start;
   padding: 18px 10px 24px;
   color: var(--muted);
-  font-size: 11.5px;
+  font-size: 12px;
 }
 
 .deadline-empty span {
@@ -689,7 +689,7 @@
 .hack-card__organizer {
   margin-top: 4px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
 }
 
@@ -698,7 +698,7 @@
   flex-direction: column;
   gap: 6px;
   color: #6d8479;
-  font-size: 10.5px;
+  font-size: 12px;
 }
 
 .hack-card__meta span {
@@ -733,7 +733,7 @@
   gap: 4px;
   padding: 4px 7px;
   border-radius: 7px;
-  font-size: 9.5px;
+  font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -759,7 +759,7 @@
   gap: 4px;
   margin-left: auto;
   color: #7d8f86;
-  font-size: 9.5px;
+  font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -831,7 +831,7 @@
 
 .win-strip__copy > span {
   color: #a08447;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -855,7 +855,7 @@
 .win-strip__copy p {
   overflow: hidden;
   color: #92815b;
-  font-size: 10.5px;
+  font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }

@@ -8,8 +8,8 @@ html[data-theme='dark'] {
   --surface-soft: #162a25;
   --ink: #e6f4ee;
   --ink-soft: #bcd3ca;
-  --muted: #8aa39a;
-  --muted-light: #6d8880;
+  --muted: #a3b9b0;
+  --muted-light: #8fa89f;
   --line: #213732;
   --line-strong: #2c473f;
   --mint-50: #0f211c;
@@ -79,6 +79,15 @@ html[data-theme='dark'] .next-up,
 html[data-theme='dark'] .win-strip {
   background: var(--surface);
   border-color: var(--line);
+}
+
+html[data-theme='dark'] .win-strip__copy h3,
+html[data-theme='dark'] .win-strip__copy h3 em {
+  color: #f3e4b5;
+}
+
+html[data-theme='dark'] .win-strip__copy p {
+  color: #cdbf9a;
 }
 
 html[data-theme='dark'] .sidebar {
