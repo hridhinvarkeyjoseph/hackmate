@@ -38,12 +38,24 @@ const NOT_THEMES = new Set([
   'Experienced Professionals',
   'School Students',
   'Others',
+  'Arts, Commerce, Sciences & Others',
+  'Medical',
+  'Law',
 ])
+
+const PLACEHOLDER_ORGANIZERS = new Set(['Devfolio host', 'Unstop host'])
 
 const text = (value: unknown): string => (typeof value === 'string' ? value.trim() : '')
 const date = (value: unknown): string => {
   const candidate = text(value).slice(0, 10)
   return ISO_DATE.test(candidate) ? candidate : ''
+}
+
+const titleCase = (value: string) => `${value.charAt(0).toUpperCase()}${value.slice(1)}`
+
+const prizeLabel = (value: unknown): string => {
+  const prize = text(value)
+  return /^\d+$/.test(prize) ? `₹${Number(prize).toLocaleString('en-IN')}` : prize
 }
 
 const themeName = (theme: unknown): string =>
@@ -59,24 +71,31 @@ export function normalizeListing(raw: unknown): LiveEvent | null {
   if (!id || !name || !/^https:\/\//.test(applyUrl)) return null
 
   const startDate = date(row.startDate)
+  const source = text(row.source)
+  const organizer = text(row.organizer)
   return {
     id,
     name,
-    organizer: text(row.organizer),
+    organizer:
+      organizer && !PLACEHOLDER_ORGANIZERS.has(organizer)
+        ? organizer
+        : source
+          ? `Listed on ${titleCase(source)}`
+          : '',
     mode: MODES.includes(row.mode as Mode) ? (row.mode as Mode) : 'In person',
     location: text(row.location),
     themes: (Array.isArray(row.themes) ? row.themes : [])
       .map(themeName)
       .filter((theme) => theme && !NOT_THEMES.has(theme))
       .slice(0, 3),
-    prize: text(row.prize),
+    prize: prizeLabel(row.prize),
     applyUrl,
     startDate,
     endDate: date(row.endDate) || startDate,
     deadline: date(row.deadline) || startDate,
     region: text(row.region),
     open: row.open === true,
-    source: text(row.source),
+    source,
   }
 }
 
@@ -120,7 +139,7 @@ export const deadlineIsEstimated = (event: LiveEvent): boolean => event.source =
 
 /** Copies a listing onto the user's board, ready to plan around. */
 export function listingToHackathon(event: LiveEvent, id: string, createdAt: string): Hackathon {
-  const origin = event.source ? `Found on ${event.source[0].toUpperCase()}${event.source.slice(1)}.` : ''
+  const origin = event.source ? `Found on ${titleCase(event.source)}.` : ''
   const caution = deadlineIsEstimated(event)
     ? ' The deadline is the start date, so confirm the real cutoff on the listing.'
     : ''

@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-11-18T16:48:43.393Z",
+  "generatedAt": "2026-11-18T17:32:44.685Z",
   "source": "unstop+devfolio",
   "count": 65,
   "events": [
     {
       "id": "devfolio-d959fbb33372440883f65f9ff9054982",
       "name": "Winter of Code 2026",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "Online",
       "location": "Online",
       "themes": [],
@@ -25,12 +25,8 @@
       "organizer": "K. J. Somaiya College of Engineering (KJSCE), Vidyavihar",
       "mode": "In person",
       "location": "India",
-      "themes": [
-        "Engineering Students",
-        "Postgraduate",
-        "Undergraduate"
-      ],
-      "prize": "150000",
+      "themes": [],
+      "prize": "₹1,50,000",
       "applyUrl": "https://unstop.com/hackathons/agri-tech-hackathon-2027-24-hours-to-hack-the-harvest-k-j-somaiya-college-of-engineering-kjsce-vidyavihar-1792152",
       "startDate": "2026-11-03",
       "endDate": "2027-01-23",
@@ -45,12 +41,8 @@
       "organizer": "Biorad Medisys Private Limited",
       "mode": "In person",
       "location": "India",
-      "themes": [
-        "Engineering Students",
-        "Undergraduate",
-        "Fresher"
-      ],
-      "prize": "15000",
+      "themes": [],
+      "prize": "₹15,000",
       "applyUrl": "https://unstop.com/hackathons/srujana-ai-2026-hackathon-batch-3-biorad-medisys-private-limited-1794480",
       "startDate": "2026-11-04",
       "endDate": "2026-11-19",
@@ -65,12 +57,8 @@
       "organizer": "College of Engineering (CEG), Guindy,  Anna University",
       "mode": "Online",
       "location": "Online",
-      "themes": [
-        "Engineering Students",
-        "Postgraduate",
-        "Undergraduate"
-      ],
-      "prize": "75000",
+      "themes": [],
+      "prize": "₹75,000",
       "applyUrl": "https://unstop.com/hackathons/hackz26-computer-science-and-engineering-association-csea-ceg-anna-university-1776729",
       "startDate": "2026-11-05",
       "endDate": "2027-01-30",
@@ -86,7 +74,7 @@
       "mode": "Online",
       "location": "Online",
       "themes": [],
-      "prize": "50000",
+      "prize": "₹50,000",
       "applyUrl": "https://unstop.com/hackathons/crp-seed-hackathon-2026-seed-global-education-services-private-limited-1798287",
       "startDate": "2026-11-06",
       "endDate": "2026-12-22",
@@ -101,11 +89,7 @@
       "organizer": "Jain College of Engineering & Technology, Hubballi",
       "mode": "In person",
       "location": "India",
-      "themes": [
-        "Engineering Students",
-        "Undergraduate",
-        "Management"
-      ],
+      "themes": [],
       "prize": "",
       "applyUrl": "https://unstop.com/hackathons/hackignite-10-24-hours-national-level-hackathon-jain-college-of-engineering-technology-hubballi-1801378",
       "startDate": "2026-11-08",
@@ -118,7 +102,7 @@
     {
       "id": "devfolio-cdf2af90c090403a9db2f0162a99b687",
       "name": "Founders' House Kolkata",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "India",
       "themes": [],
@@ -153,12 +137,8 @@
       "organizer": "GM University Davanagere",
       "mode": "In person",
       "location": "India",
-      "themes": [
-        "Engineering Students",
-        "Postgraduate",
-        "Undergraduate"
-      ],
-      "prize": "6000",
+      "themes": [],
+      "prize": "₹6,000",
       "applyUrl": "https://unstop.com/hackathons/capture-the-flag-ctf-ignitron-2k26-gm-university-davanagere-1791574",
       "startDate": "2026-11-11",
       "endDate": "2026-12-03",
@@ -173,11 +153,7 @@
       "organizer": "Hoollow",
       "mode": "Online",
       "location": "Online",
-      "themes": [
-        "Engineering Students",
-        "Postgraduate",
-        "Undergraduate"
-      ],
+      "themes": [],
       "prize": "",
       "applyUrl": "https://unstop.com/hackathons/bad-ideas-only-hoollow-1805107",
       "startDate": "2026-11-11",
@@ -193,10 +169,7 @@
       "organizer": "Siddaganga Institute of Technology (SIT), Tumkur",
       "mode": "In person",
       "location": "India",
-      "themes": [
-        "Engineering Students",
-        "Undergraduate"
-      ],
+      "themes": [],
       "prize": "",
       "applyUrl": "https://unstop.com/hackathons/wie-code-2k26-siddaganga-institute-of-technology-sit-tumkur-1817696",
       "startDate": "2026-11-12",
@@ -212,12 +185,8 @@
       "organizer": "Dr. Ambedkar Institute of Technology for Divyangjan",
       "mode": "In person",
       "location": "India",
-      "themes": [
-        "Engineering Students",
-        "Postgraduate",
-        "Undergraduate"
-      ],
-      "prize": "10000",
+      "themes": [],
+      "prize": "₹10,000",
       "applyUrl": "https://unstop.com/hackathons/promptwars-x-aith-dr-ambedkar-institute-of-technology-for-divyangjan-1807596",
       "startDate": "2026-11-12",
       "endDate": "2026-11-23",
@@ -232,11 +201,7 @@
       "organizer": "HackKro",
       "mode": "Online",
       "location": "Online",
-      "themes": [
-        "Engineering Students",
-        "Postgraduate",
-        "Undergraduate"
-      ],
+      "themes": [],
       "prize": "",
       "applyUrl": "https://unstop.com/hackathons/hackkro-codebyte-2026-hackkro-1807297",
       "startDate": "2026-11-12",
@@ -252,11 +217,7 @@
       "organizer": "Quik CPQ Solutions LLP",
       "mode": "Online",
       "location": "Online",
-      "themes": [
-        "Experienced Professionals",
-        "Engineering Students",
-        "Postgraduate"
-      ],
+      "themes": [],
       "prize": "",
       "applyUrl": "https://unstop.com/hackathons/quikcpq-ai-innovation-challenge-2027-quik-cpq-solutions-llp-1806984",
       "startDate": "2026-11-12",
@@ -273,7 +234,7 @@
       "mode": "Hybrid",
       "location": "India",
       "themes": [],
-      "prize": "5000",
+      "prize": "₹5,000",
       "applyUrl": "https://unstop.com/hackathons/lighthouse-hackathon-chandigarh-university-cu-ajitgarh-punjab-1809486",
       "startDate": "2026-11-13",
       "endDate": "2027-01-10",
@@ -289,7 +250,7 @@
       "mode": "Online",
       "location": "Online",
       "themes": [],
-      "prize": "100000",
+      "prize": "₹1,00,000",
       "applyUrl": "https://unstop.com/hackathons/configure-2026-a-mobility-hackathon-zeliot-pvt-ltd-1811085",
       "startDate": "2026-11-14",
       "endDate": "2026-11-26",
@@ -304,12 +265,8 @@
       "organizer": "Indian Institute of Technology (IIT), Bombay",
       "mode": "Online",
       "location": "Online",
-      "themes": [
-        "Engineering Students",
-        "Postgraduate",
-        "Undergraduate"
-      ],
-      "prize": "15000",
+      "themes": [],
+      "prize": "₹15,000",
       "applyUrl": "https://unstop.com/hackathons/codathon-1-global-coding-contest-iit-bombay-1811016",
       "startDate": "2026-11-14",
       "endDate": "2027-01-09",
@@ -324,11 +281,8 @@
       "organizer": "BMS Insitute of Technology and Management",
       "mode": "Hybrid",
       "location": "India",
-      "themes": [
-        "Engineering Students",
-        "Undergraduate"
-      ],
-      "prize": "25000",
+      "themes": [],
+      "prize": "₹25,000",
       "applyUrl": "https://unstop.com/hackathons/codered26-bms-insitute-of-technology-and-management-1810268",
       "startDate": "2026-11-14",
       "endDate": "2026-12-29",
@@ -343,12 +297,8 @@
       "organizer": "Madan Mohan Malaviya University of Technology",
       "mode": "In person",
       "location": "India",
-      "themes": [
-        "Engineering Students",
-        "Postgraduate",
-        "Undergraduate"
-      ],
-      "prize": "6000",
+      "themes": [],
+      "prize": "₹6,000",
       "applyUrl": "https://unstop.com/hackathons/mantrastra-techsrijan-27-madan-mohan-malaviya-university-of-technology-1810554",
       "startDate": "2026-11-14",
       "endDate": "2026-12-26",
@@ -363,12 +313,8 @@
       "organizer": "Indian Institute of Information Technology (IIIT), Allahabad",
       "mode": "Online",
       "location": "Online",
-      "themes": [
-        "Engineering Students",
-        "Postgraduate",
-        "Undergraduate"
-      ],
-      "prize": "30000",
+      "themes": [],
+      "prize": "₹30,000",
       "applyUrl": "https://unstop.com/hackathons/opencode-2026-opencode-indian-institute-of-information-technology-iiit-allahabad-1811349",
       "startDate": "2026-11-15",
       "endDate": "2026-12-13",
@@ -399,12 +345,8 @@
       "organizer": "Indian Institute of Technology (IIT), Bombay",
       "mode": "In person",
       "location": "India",
-      "themes": [
-        "Engineering Students",
-        "Postgraduate",
-        "Undergraduate"
-      ],
-      "prize": "50000",
+      "themes": [],
+      "prize": "₹50,000",
       "applyUrl": "https://unstop.com/hackathons/the-algo-trading-innovation-challenge-iit-bombay-1811240",
       "startDate": "2026-11-15",
       "endDate": "2026-11-29",
@@ -419,12 +361,8 @@
       "organizer": "National Institute of Technology Karnataka (NITK), Surathkal",
       "mode": "Online",
       "location": "Online",
-      "themes": [
-        "Engineering Students",
-        "Postgraduate",
-        "Undergraduate"
-      ],
-      "prize": "40000",
+      "themes": [],
+      "prize": "₹40,000",
       "applyUrl": "https://unstop.com/hackathons/silicon-sprint-2026-nitk-surathkal-1814263",
       "startDate": "2026-11-16",
       "endDate": "2026-11-28",
@@ -439,11 +377,7 @@
       "organizer": "Birla Institute of Technology, Mesra, Ranchi",
       "mode": "Online",
       "location": "Online",
-      "themes": [
-        "Engineering Students",
-        "Postgraduate",
-        "Undergraduate"
-      ],
+      "themes": [],
       "prize": "",
       "applyUrl": "https://unstop.com/hackathons/ctf-cicada-2026-birla-institute-of-technology-mesra-ranchi-1814002",
       "startDate": "2026-11-16",
@@ -460,7 +394,7 @@
       "mode": "Hybrid",
       "location": "India",
       "themes": [],
-      "prize": "40000",
+      "prize": "₹40,000",
       "applyUrl": "https://unstop.com/hackathons/code-relay-50-indian-institute-of-technology-iit-bhubaneswar-1810370",
       "startDate": "2026-11-16",
       "endDate": "2027-01-17",
@@ -475,12 +409,8 @@
       "organizer": "Guru Nanak Dev Engineering College Bidar",
       "mode": "In person",
       "location": "India",
-      "themes": [
-        "Engineering Students",
-        "Postgraduate",
-        "Undergraduate"
-      ],
-      "prize": "40000",
+      "themes": [],
+      "prize": "₹40,000",
       "applyUrl": "https://unstop.com/hackathons/spectrum-10-24-hour-national-level-hackathon-guru-nanak-dev-engineering-college-bidar-1812368",
       "startDate": "2026-11-16",
       "endDate": "2026-12-06",
@@ -495,11 +425,7 @@
       "organizer": "HackWithPune",
       "mode": "Online",
       "location": "Online",
-      "themes": [
-        "Engineering Students",
-        "Postgraduate",
-        "Undergraduate"
-      ],
+      "themes": [],
       "prize": "",
       "applyUrl": "https://unstop.com/hackathons/codeunited-india-national-hackathon-hackwithpune-1817749",
       "startDate": "2026-11-17",
@@ -515,11 +441,7 @@
       "organizer": "ABES Engineering College",
       "mode": "Online",
       "location": "Online",
-      "themes": [
-        "Engineering Students",
-        "Postgraduate",
-        "Undergraduate"
-      ],
+      "themes": [],
       "prize": "",
       "applyUrl": "https://unstop.com/hackathons/data-visualization-using-python-debugging-test-unit-1-set-b-abes-engineering-college-1816592",
       "startDate": "2026-11-17",
@@ -535,11 +457,7 @@
       "organizer": "ABES Engineering College",
       "mode": "Online",
       "location": "Online",
-      "themes": [
-        "Engineering Students",
-        "Postgraduate",
-        "Undergraduate"
-      ],
+      "themes": [],
       "prize": "",
       "applyUrl": "https://unstop.com/hackathons/data-visualization-using-python-debugging-test-unit-2-set-a-abes-engineering-college-1816631",
       "startDate": "2026-11-17",
@@ -555,12 +473,8 @@
       "organizer": "Indian Institute of Information Technology (IIIT), Lucknow",
       "mode": "Hybrid",
       "location": "India",
-      "themes": [
-        "Engineering Students",
-        "Postgraduate",
-        "Undergraduate"
-      ],
-      "prize": "100000",
+      "themes": [],
+      "prize": "₹1,00,000",
       "applyUrl": "https://unstop.com/hackathons/ai-kaushal-hackathon-2026-indian-institute-of-information-technology-iiit-lucknow-1817798",
       "startDate": "2026-11-18",
       "endDate": "2026-12-09",
@@ -591,12 +505,8 @@
       "organizer": "Quad AI School of Technology & Management",
       "mode": "In person",
       "location": "India",
-      "themes": [
-        "Engineering Students",
-        "Postgraduate",
-        "Undergraduate"
-      ],
-      "prize": "10000",
+      "themes": [],
+      "prize": "₹10,000",
       "applyUrl": "https://unstop.com/hackathons/promptwars-x-quad-bengaluru-quad-ai-school-of-technology-management-1817389",
       "startDate": "2026-11-18",
       "endDate": "2026-12-04",
@@ -608,7 +518,7 @@
     {
       "id": "devfolio-8b69c2039a8d4b4085c3869b9b25d9c9",
       "name": "Lean In Hacks 8.0",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "India",
       "themes": [],
@@ -624,7 +534,7 @@
     {
       "id": "devfolio-0dab52b6085941a6b366b2425310d8b8",
       "name": "THE BIG HACK 2.0",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Soladevanahalli",
       "themes": [],
@@ -640,7 +550,7 @@
     {
       "id": "devfolio-4a39b7a9b8d747e5a85b2ff58ff570e4",
       "name": "CODEFESTTHON 2026",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "Online",
       "location": "Online",
       "themes": [],
@@ -656,7 +566,7 @@
     {
       "id": "devfolio-40f5203a0b9842038b51dd3f73236690",
       "name": "GeNarrative Clash",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Kolkata",
       "themes": [
@@ -675,7 +585,7 @@
     {
       "id": "devfolio-b1b54e741bd94926a7cac489a92551fc",
       "name": "Hack-a-Sol 2026",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Atal Nagar-Nava Raipur",
       "themes": [],
@@ -691,7 +601,7 @@
     {
       "id": "devfolio-c5731def845a4782ac461b66ceddced0",
       "name": "Code N Mod",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Tumakur",
       "themes": [],
@@ -707,7 +617,7 @@
     {
       "id": "devfolio-d957bc2099f945e99edfae0c2972bed9",
       "name": "DevNexus 2.0",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Kolkata",
       "themes": [],
@@ -723,7 +633,7 @@
     {
       "id": "devfolio-2689d878c21e4cf1a61a50f5104587f0",
       "name": "Clash of Commits",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Chennai",
       "themes": [],
@@ -739,7 +649,7 @@
     {
       "id": "devfolio-931ca9149c46417bb0526ce1eb44b920",
       "name": "MakerSpark",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Thiruvananthapuram",
       "themes": [
@@ -757,7 +667,7 @@
     {
       "id": "devfolio-c84b90d65eff4ae083366fc1cc549e81",
       "name": "hackodisha-6.0",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "Online",
       "location": "Online",
       "themes": [],
@@ -773,7 +683,7 @@
     {
       "id": "devfolio-cf5fb5645ec44de88ee455be936825da",
       "name": "ETHChiangmai & Longevity Hackathon 2026",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "4Seas Nimman Coliving Coworking Space Nimmana Haeminda Road Lane 15 Nimmanhaemin Suthep, Mueang Chiang Mai District, Chiang Mai, Thailand",
       "themes": [
@@ -793,7 +703,7 @@
     {
       "id": "devfolio-0c74c99ebe4d4bc8b1b9972451f350ca",
       "name": "Hack For Tomorrow 2026",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Ernakulam",
       "themes": [],
@@ -809,7 +719,7 @@
     {
       "id": "devfolio-50e23a48e3964f43878279a3bf81339d",
       "name": "haxfinity",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Myladi",
       "themes": [
@@ -829,7 +739,7 @@
     {
       "id": "devfolio-fd0e448aac74401697c00e7e41745383",
       "name": "Winter of Code 6.0",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "India",
       "themes": [],
@@ -845,7 +755,7 @@
     {
       "id": "devfolio-16159aa9a84d4cddb42554fe5e48fa5a",
       "name": "Techacks 5.0",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Rajpura",
       "themes": [
@@ -865,7 +775,7 @@
     {
       "id": "devfolio-1c7af64a076f43d5a088b7b65ae793a3",
       "name": "GOA BUILDATHON 27",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Goa, India",
       "themes": [],
@@ -881,7 +791,7 @@
     {
       "id": "devfolio-f7ae4d7e19fe40c592a899133be5dc7f",
       "name": "Convergence",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Kalyani",
       "themes": [],
@@ -897,7 +807,7 @@
     {
       "id": "devfolio-c163f2c5e7bb4c7bb7acbdb3c572bfa3",
       "name": "HACK WITH GDG S4",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "KSR Kalvi Nagar",
       "themes": [],
@@ -913,7 +823,7 @@
     {
       "id": "devfolio-1c56ad13b8b0467ca2c3772566a0fdd2",
       "name": "HACK 6.0",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Hamirpur",
       "themes": [],
@@ -929,7 +839,7 @@
     {
       "id": "devfolio-dbea472849f54f6dba58d9495e94e8be",
       "name": "DevNexus Vidisha",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Vidisha",
       "themes": [],
@@ -945,7 +855,7 @@
     {
       "id": "devfolio-e800e7f7535945b59b3516a08424db39",
       "name": "Health Hackathon 3.0",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Kothri Kalan",
       "themes": [],
@@ -961,7 +871,7 @@
     {
       "id": "devfolio-feaf6d51a5ba4774acf1ccaaa1d4b789",
       "name": "Innerve 11.0",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Pune",
       "themes": [],
@@ -977,7 +887,7 @@
     {
       "id": "devfolio-4a726052359d4ba8af95d60e9dc253cf",
       "name": "Makeathon 9.0",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Patiala",
       "themes": [],
@@ -993,7 +903,7 @@
     {
       "id": "devfolio-409173af22ac40d5aecb47ea06886ab3",
       "name": "Hack Nexus 2027",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Nagpur",
       "themes": [],
@@ -1009,7 +919,7 @@
     {
       "id": "devfolio-6ab81312cb504b4195e46290f44e7191",
       "name": "Hacksprint 3.0",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "India",
       "themes": [],
@@ -1025,7 +935,7 @@
     {
       "id": "devfolio-f7babc21a0554c1883c9aed5f810a5e4",
       "name": "HackTU 8.0",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Patiala",
       "themes": [],
@@ -1041,7 +951,7 @@
     {
       "id": "devfolio-c3799771d6044d5dab5b1166ed242bc7",
       "name": "CODERAVE 2.0",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "India",
       "themes": [],
@@ -1057,7 +967,7 @@
     {
       "id": "devfolio-4470b13a397a413ca598d4413820eee5",
       "name": "Texus 2027",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Chennai",
       "themes": [],
@@ -1073,7 +983,7 @@
     {
       "id": "devfolio-cd4f5f7185d34287a43a12910978e19d",
       "name": "HACK2027",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Chennai",
       "themes": [],
@@ -1089,7 +999,7 @@
     {
       "id": "devfolio-95bf7c6d28f04200b4891984b304bb1a",
       "name": "doubleSlash 5.0",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Bidhannagar",
       "themes": [],
@@ -1105,7 +1015,7 @@
     {
       "id": "devfolio-8cf5de84ec814a8daf7f6c4caf538045",
       "name": "Diversion 2k27",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Bidhannagar",
       "themes": [],
@@ -1121,7 +1031,7 @@
     {
       "id": "devfolio-6a9a810d11934e278fe5a13409791cde",
       "name": "Touch Some Grass",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Chennai",
       "themes": [],
@@ -1137,7 +1047,7 @@
     {
       "id": "devfolio-33da0fd4233c4ea1a4549375c145864c",
       "name": "ECLIPSE 7.0",
-      "organizer": "Devfolio host",
+      "organizer": "",
       "mode": "In person",
       "location": "Patiala",
       "themes": [],

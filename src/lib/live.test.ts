@@ -33,6 +33,16 @@ describe('normalizeListing', () => {
     expect(result?.themes).toEqual(['AI'])
   })
 
+  it('shows plain prize amounts as rupees', () => {
+    expect(normalizeListing({ ...listing(), prize: '100000' })?.prize).toBe('₹1,00,000')
+    expect(normalizeListing({ ...listing(), prize: '$500' })?.prize).toBe('$500')
+  })
+
+  it('replaces placeholder organizers with the source', () => {
+    const row = { ...listing(), organizer: 'Devfolio host', source: 'devfolio' }
+    expect(normalizeListing(row)?.organizer).toBe('Listed on Devfolio')
+  })
+
   it('rejects rows without a safe link', () => {
     expect(normalizeListing({ ...listing(), applyUrl: 'javascript:alert(1)' })).toBeNull()
     expect(normalizeListing('nope')).toBeNull()

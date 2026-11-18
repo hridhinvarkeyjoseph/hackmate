@@ -37,7 +37,20 @@ const AUDIENCE = new Set([
   'Experienced Professionals',
   'School Students',
   'Others',
+  'Arts, Commerce, Sciences & Others',
+  'Medical',
+  'Law',
 ])
+
+const CURRENCY = { 'fa-rupee': '₹', 'fa-inr': '₹', 'fa-dollar': '$', 'fa-usd': '$', 'fa-eur': '€', 'fa-gbp': '£' }
+
+function prizeLabel(prize) {
+  if (!prize) return ''
+  if (typeof prize.cash === 'number' && prize.cash > 0) {
+    return `${CURRENCY[prize.currency] ?? ''}${prize.cash.toLocaleString('en-IN')}`
+  }
+  return prize.name ?? ''
+}
 
 // Devfolio sends theme objects, Unstop sends strings. The app only wants names.
 const themeNames = (themes) =>
@@ -47,9 +60,9 @@ const themeNames = (themes) =>
     .slice(0, 3)
 
 function toEvent(row) {
-  const org = row.organisation?.name ?? 'Unstop host'
+  const org = row.organisation?.name ?? ''
   const location = row.locations?.[0]?.name ?? (row.region === 'online' ? 'Online' : 'India')
-  const prize = row.prizes?.[0]?.cash ?? row.prizes?.[0]?.name ?? ''
+  const prize = prizeLabel(row.prizes?.[0])
   const themes = [
     ...(Array.isArray(row.filters) ? row.filters.map((f) => f.name) : []),
     ...(Array.isArray(row.tags) ? row.tags.map((t) => t.name ?? t) : []),
@@ -64,7 +77,7 @@ function toEvent(row) {
     mode: mode(row.region),
     location,
     themes,
-    prize: prize ? String(prize) : '',
+    prize,
     applyUrl: `https://unstop.com/${row.public_url}`,
     startDate: iso(row.start_date),
     endDate: iso(row.end_date),
@@ -95,7 +108,7 @@ async function fetchDevfolio() {
         out.push({
           id: `devfolio-${pick(row, ['uuid', 'id'], String(out.length))}`,
           name: pick(row, ['name', 'title'], 'Devfolio hackathon'),
-          organizer: pick(row, ['organizerName', 'organizer'], 'Devfolio host'),
+          organizer: pick(row, ['organizerName', 'organizer']),
           mode: online ? 'Online' : 'In person',
           location: pick(row, ['city', 'location'], online ? 'Online' : 'India'),
           themes: themeNames(row?.themes),
