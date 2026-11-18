@@ -15,6 +15,8 @@ Students miss hackathons because listings are scattered, deadlines slip, and nob
 - **Go / Maybe / Skip on real listings.** Each open hackathon from Unstop and Devfolio is judged on distance, how well it matches your themes, and clashes with your calendar. Every verdict shows its reasons.
 - **Personal from the first minute.** Pick your city and interests, and the rankings adapt straight away.
 - **Sprint planner.** One tap spreads a proven hackathon routine across the days you really have.
+- **Today's focus.** Your sprint plans become one short list of what to do now, with anything overdue first.
+- **Pitch builder.** Answer six simple questions and get a timed one-minute script you can practise and copy.
 - **Submission readiness score.** A live percentage and the three things that would raise it most.
 - **Portfolio export.** Turns what you shipped into a Markdown page for GitHub or a resume.
 - **Team plans with no accounts.** A share link carries the plan to teammates, while your notes, team names and submission links stay out of it.
@@ -48,6 +50,8 @@ The logic lives in small, tested modules in `src/lib`:
 | `live.ts` | Validates feed data and selects open listings |
 | `finder.ts` | Locates venues, measures distance, ranks listings |
 | `planner.ts` | Builds the sprint plan |
+| `today.ts` | Chooses what to work on now |
+| `pitch.ts` | Writes and times the pitch script |
 | `readiness.ts` | Scores submission readiness |
 | `portfolio.ts` | Writes the Markdown portfolio |
 | `share.ts` | Creates and safely reads team share links |
