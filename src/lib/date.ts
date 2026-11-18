@@ -46,6 +46,10 @@ export function formatRange(start: string, end: string): string {
     startDate.getFullYear() === endDate.getFullYear()
   const sameYear = startDate.getFullYear() === endDate.getFullYear()
 
+  if (start === end) {
+    return startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  }
+
   if (sameMonth) {
     return `${startDate.toLocaleDateString('en-US', { month: 'short' })} ${startDate.getDate()}–${endDate.getDate()}, ${endDate.getFullYear()}`
   }
