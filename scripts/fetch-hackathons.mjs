@@ -5,7 +5,7 @@
  * format changes the previous file is kept and the app keeps working.
  */
 import { readFile, writeFile } from 'node:fs/promises'
-import { fromDevfolio, fromUnstop, selectUpcoming } from './listings.mjs'
+import { combineSources, fromDevfolio, fromUnstop, selectUpcoming } from './listings.mjs'
 
 const PAGES = Number(process.env.PAGES || 3)
 const OUT = new URL('../public/live-hackathons.json', import.meta.url)
@@ -49,8 +49,14 @@ async function fetchDevfolio() {
 }
 
 async function main() {
-  const events = [...(await fetchUnstop()), ...(await fetchDevfolio())]
+  const { events, failures } = combineSources(
+    await Promise.allSettled([fetchUnstop(), fetchDevfolio()]),
+  )
+  for (const failure of failures) console.warn(`source failed: ${failure}`)
+
   const upcoming = selectUpcoming(events, new Date().toISOString().slice(0, 10))
+  // An empty result means something broke, so never replace good data with it.
+  if (upcoming.length === 0) throw new Error('no upcoming hackathons found')
 
   const payload = {
     generatedAt: new Date().toISOString(),

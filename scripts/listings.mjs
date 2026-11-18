@@ -112,3 +112,14 @@ export function selectUpcoming(events, today) {
     .filter((event) => (event.endDate || event.startDate) >= today)
     .sort((a, b) => (a.startDate || '').localeCompare(b.startDate || ''))
 }
+
+/** Combines source results, reporting failures without losing the rest. */
+export function combineSources(results) {
+  const events = []
+  const failures = []
+  for (const result of results) {
+    if (result.status === 'fulfilled') events.push(...result.value)
+    else failures.push(result.reason?.message ?? String(result.reason))
+  }
+  return { events, failures }
+}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fromDevfolio, fromUnstop, prizeLabel, selectUpcoming } from './listings.mjs'
+import { combineSources, fromDevfolio, fromUnstop, prizeLabel, selectUpcoming } from './listings.mjs'
 
 describe('prizeLabel', () => {
   it('formats cash with its currency', () => {
@@ -77,5 +77,16 @@ describe('selectUpcoming', () => {
       { id: 'past', startDate: '2026-01-01', endDate: '2026-01-02' },
     ]
     expect(selectUpcoming(events, '2026-11-18').map((event) => event.id)).toEqual(['soon', 'late'])
+  })
+})
+
+describe('combineSources', () => {
+  it('keeps working sources when another one fails', () => {
+    const result = combineSources([
+      { status: 'rejected', reason: new Error('Unstop page 1: HTTP 403') },
+      { status: 'fulfilled', value: [{ id: 'a' }] },
+    ])
+    expect(result.events).toEqual([{ id: 'a' }])
+    expect(result.failures).toEqual(['Unstop page 1: HTTP 403'])
   })
 })
