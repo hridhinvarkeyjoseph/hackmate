@@ -1,8 +1,7 @@
 import type { Hackathon } from '../types'
-import { isNativeApp } from './platform'
+import { isNativeApp, PUBLIC_APP_URL } from './platform'
 import { makeId, normalizeEvents } from './storage'
 
-const PUBLIC_APP_URL = 'https://hridhinvarkeyjoseph.github.io/hackmate/'
 const HASH_PREFIX = '#join='
 const MAX_ENCODED_LENGTH = 12_000
 

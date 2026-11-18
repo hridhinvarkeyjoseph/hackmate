@@ -1,5 +1,7 @@
 import { Capacitor } from '@capacitor/core'
 
+export const PUBLIC_APP_URL = 'https://hridhinvarkeyjoseph.github.io/hackmate/'
+
 export const isNativeApp = (): boolean => Capacitor.isNativePlatform()
 
 /**
