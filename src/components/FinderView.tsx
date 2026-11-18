@@ -206,7 +206,7 @@ export function FinderView({ events, listings, listingsAt, interests, onTrack }:
                 type="search"
                 value={query}
                 placeholder="Search name, city or theme"
-                aria-label="Search hackathons"
+                aria-label="Filter open hackathons"
                 onChange={(event) => {
                   setQuery(event.target.value)
                   setVisible(PAGE_SIZE)
