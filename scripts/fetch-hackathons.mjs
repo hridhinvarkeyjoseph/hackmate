@@ -26,6 +26,19 @@ const iso = (value) => (typeof value === 'string' && value.slice(0, 10)) || ''
 const mode = (region) =>
   region === 'online' ? 'Online' : region === 'hybrid' ? 'Hybrid' : 'In person'
 
+// Unstop mixes audience tags into its filters. They say who can join, not the topic.
+const AUDIENCE = new Set([
+  'All',
+  'Engineering Students',
+  'Undergraduate',
+  'Postgraduate',
+  'Fresher',
+  'Management',
+  'Experienced Professionals',
+  'School Students',
+  'Others',
+])
+
 // Devfolio sends theme objects, Unstop sends strings. The app only wants names.
 const themeNames = (themes) =>
   (Array.isArray(themes) ? themes : [])
@@ -41,7 +54,7 @@ function toEvent(row) {
     ...(Array.isArray(row.filters) ? row.filters.map((f) => f.name) : []),
     ...(Array.isArray(row.tags) ? row.tags.map((t) => t.name ?? t) : []),
   ]
-    .filter((t) => typeof t === 'string' && t && t !== 'All')
+    .filter((t) => typeof t === 'string' && t && !AUDIENCE.has(t))
     .slice(0, 3)
 
   return {

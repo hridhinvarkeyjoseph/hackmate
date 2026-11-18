@@ -28,6 +28,11 @@ describe('normalizeListing', () => {
     expect(result?.themes).toEqual(['AI', 'Design'])
   })
 
+  it('does not treat audience tags as themes', () => {
+    const result = normalizeListing({ ...listing(), themes: ['Undergraduate', 'AI'] })
+    expect(result?.themes).toEqual(['AI'])
+  })
+
   it('rejects rows without a safe link', () => {
     expect(normalizeListing({ ...listing(), applyUrl: 'javascript:alert(1)' })).toBeNull()
     expect(normalizeListing('nope')).toBeNull()

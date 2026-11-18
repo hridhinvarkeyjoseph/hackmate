@@ -27,6 +27,19 @@ export type LiveFeed = {
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 const MODES: Mode[] = ['Online', 'In person', 'Hybrid']
 
+/** Tags that describe who may join or nothing at all, rather than a topic. */
+const NOT_THEMES = new Set([
+  'No Restrictions',
+  'Engineering Students',
+  'Undergraduate',
+  'Postgraduate',
+  'Fresher',
+  'Management',
+  'Experienced Professionals',
+  'School Students',
+  'Others',
+])
+
 const text = (value: unknown): string => (typeof value === 'string' ? value.trim() : '')
 const date = (value: unknown): string => {
   const candidate = text(value).slice(0, 10)
@@ -54,7 +67,7 @@ export function normalizeListing(raw: unknown): LiveEvent | null {
     location: text(row.location),
     themes: (Array.isArray(row.themes) ? row.themes : [])
       .map(themeName)
-      .filter((theme) => theme && theme !== 'No Restrictions')
+      .filter((theme) => theme && !NOT_THEMES.has(theme))
       .slice(0, 3),
     prize: text(row.prize),
     applyUrl,
