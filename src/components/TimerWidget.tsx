@@ -1,3 +1,4 @@
+import { notifyTimerDone } from '../lib/reminders'
 import { useEffect, useRef, useState } from 'react'
 import { AlarmClock, Pause, Play, RotateCcw, X } from 'lucide-react'
 
@@ -64,9 +65,7 @@ export function TimerWidget() {
             osc.stop(start + 0.35)
           }
         }
-        if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-          new Notification('Time is up', { body: 'Your Hackmate timer just rang.' })
-        }
+        notifyTimerDone()
       }
     }
     tick()
