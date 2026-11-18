@@ -17,10 +17,12 @@ import {
   MonitorPlay,
   Video,
   ListChecks,
+  Wand2,
   UserRound,
 } from 'lucide-react'
 import type { Hackathon } from '../types'
 import { daysUntil, deadlineLabel, formatDate, formatRange, parseDate, startOfDay } from '../lib/date'
+import { planSprint } from '../lib/planner'
 import { StatusBadge } from './StatusBadge'
 import { Drawer } from './Drawer'
 
@@ -31,6 +33,7 @@ type Props = {
   onDelete: (id: string) => void
   onToggleFavorite: (id: string) => void
   onToggleTask: (eventId: string, taskId: string) => void
+  onPlanSprint: (eventId: string) => void
 }
 
 export function DetailDrawer({
@@ -40,6 +43,7 @@ export function DetailDrawer({
   onDelete,
   onToggleFavorite,
   onToggleTask,
+  onPlanSprint,
 }: Props) {
   const [confirmDelete, setConfirmDelete] = useState(false)
   const today = startOfDay(new Date())
@@ -49,6 +53,9 @@ export function DetailDrawer({
   const isFuture = starts > today
   const startIn = daysUntil(event.startDate)
   const endIn = daysUntil(event.endDate)
+  const canPlan =
+    !['Won', 'Completed'].includes(event.status) &&
+    planSprint(event, new Date(), () => '').length > 0
 
   const highlight = (() => {
     if (event.status === 'Won') {
@@ -169,6 +176,12 @@ export function DetailDrawer({
             ))}
           </ul>
         </section>
+      )}
+
+      {canPlan && (
+        <button className="btn btn-secondary detail-plan" onClick={() => onPlanSprint(event.id)}>
+          <Wand2 size={15} /> {event.tasks.length > 0 ? 'Fill in my sprint plan' : 'Plan my sprint'}
+        </button>
       )}
 
       <div className="detail-grid">

@@ -113,6 +113,13 @@
   font-size: 11.5px;
 }
 
+/* --- sprint plan and readiness --- */
+.detail-plan {
+  width: 100%;
+  justify-content: center;
+  margin-top: 12px;
+}
+
 .detail-tasks {
   display: flex;
   flex-direction: column;

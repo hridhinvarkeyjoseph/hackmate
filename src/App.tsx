@@ -20,6 +20,7 @@ import { SuggestView } from './components/SuggestView'
 import { FinderView } from './components/FinderView'
 import { TimerWidget } from './components/TimerWidget'
 import { useLiveFeed } from './lib/useLiveFeed'
+import { planSprint } from './lib/planner'
 import { listingToHackathon, type LiveEvent } from './lib/live'
 
 export default function App() {
@@ -241,6 +242,21 @@ export default function App() {
     )
   }, [])
 
+  const handlePlanSprint = useCallback(
+    (eventId: string) => {
+      const event = events.find((item) => item.id === eventId)
+      if (!event) return
+      const added = planSprint(event, new Date(), () => makeId('task'))
+      setEvents((previous) =>
+        previous.map((item) =>
+          item.id === eventId ? { ...item, tasks: [...item.tasks, ...added] } : item,
+        ),
+      )
+      notify(`${added.length} steps added to your plan.`)
+    },
+    [events, notify],
+  )
+
   const toggleFavorite = useCallback((id: string) => {
     setEvents((previous) =>
       previous.map((event) =>
@@ -412,6 +428,7 @@ export default function App() {
           onDelete={handleDelete}
           onToggleFavorite={toggleFavorite}
           onToggleTask={toggleTask}
+          onPlanSprint={handlePlanSprint}
         />
       ) : null}
 
