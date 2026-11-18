@@ -923,6 +923,19 @@
   justify-content: center;
 }
 
+/* --- near me filters --- */
+.finder-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 16px 0 10px;
+}
+
+.finder-more {
+  display: flex;
+  margin: 14px auto 0;
+}
+
 /* --- live listings --- */
 .live-card {
   margin-top: 22px;

@@ -21,6 +21,7 @@ import { FinderView } from './components/FinderView'
 import { TimerWidget } from './components/TimerWidget'
 import type { CatalogEntry } from './lib/catalog'
 import { useLiveFeed } from './lib/useLiveFeed'
+import { listingToHackathon, type LiveEvent } from './lib/live'
 
 export default function App() {
   const [events, setEvents] = useState<Hackathon[]>(loadEvents)
@@ -247,6 +248,16 @@ export default function App() {
     [notify],
   )
 
+  const handleTrackListing = useCallback(
+    (listing: LiveEvent) => {
+      const saved = listingToHackathon(listing, makeId('hm'), new Date().toISOString())
+      setEvents((previous) => [saved, ...previous])
+      setDetailId(saved.id)
+      notify(`${listing.name} is on your board.`)
+    },
+    [notify],
+  )
+
   const toggleTask = useCallback((eventId: string, taskId: string) => {
     setEvents((previous) =>
       previous.map((event) =>
@@ -387,8 +398,7 @@ export default function App() {
               events={events}
               listings={listings}
               listingsAt={generatedAt}
-              onAddSuggestion={handleAddSuggestion}
-              onOpen={openEvent}
+              onTrack={handleTrackListing}
             />
           )}
           {view === 'suggest' && (

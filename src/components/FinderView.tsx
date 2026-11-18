@@ -1,21 +1,28 @@
-import { useState } from 'react'
-import { ArrowUpRight, Check, Compass, MapPin, Navigation, Plus, Sparkles, X } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { ArrowUpRight, Check, Compass, MapPin, Navigation, Plus, X } from 'lucide-react'
 import type { Hackathon } from '../types'
-import type { CatalogEntry } from '../lib/catalog'
-import { addDays, formatRange, toISODate } from '../lib/date'
-import { cityPresets, distanceKm, rankNearby, type Place } from '../lib/finder'
+import { daysBetween, formatDate, formatRange, toISODate } from '../lib/date'
+import { cityPresets, distanceKm, rankListings, type Place, type Verdict } from '../lib/finder'
 import { sources } from '../lib/catalog'
-import type { LiveEvent } from '../lib/live'
+import { deadlineIsEstimated, type LiveEvent } from '../lib/live'
 
 type Props = {
   events: Hackathon[]
   listings: LiveEvent[]
   listingsAt: string
-  onAddSuggestion: (entry: CatalogEntry) => void
-  onOpen: (event: Hackathon) => void
+  onTrack: (listing: LiveEvent) => void
 }
 
+type Filter = 'all' | Verdict
+
 const LOCATION_KEY = 'hackmate.place.v1'
+const PAGE_SIZE = 12
+const FILTERS: Array<{ id: Filter; label: string }> = [
+  { id: 'all', label: 'All' },
+  { id: 'go', label: 'Go' },
+  { id: 'maybe', label: 'Maybe' },
+  { id: 'skip', label: 'Skip' },
+]
 
 const readPlace = (): Place | null => {
   try {
@@ -28,16 +35,26 @@ const readPlace = (): Place | null => {
   }
 }
 
-const offset = (days: number) => toISODate(addDays(new Date(), days))
+function freshness(generatedAt: string): string {
+  if (!generatedAt) return ''
+  const updated = new Date(generatedAt)
+  if (Number.isNaN(updated.getTime())) return ''
+  const days = daysBetween(updated, new Date())
+  if (days <= 0) return 'Listings updated today.'
+  return `Listings updated ${days} day${days === 1 ? '' : 's'} ago.`
+}
 
-export function FinderView({ events, listings, listingsAt, onAddSuggestion, onOpen }: Props) {
+export function FinderView({ events, listings, listingsAt, onTrack }: Props) {
   const [place, setPlace] = useState<Place | null>(readPlace)
   const [error, setError] = useState<string | null>(null)
   const [locating, setLocating] = useState(false)
+  const [filter, setFilter] = useState<Filter>('all')
+  const [visible, setVisible] = useState(PAGE_SIZE)
 
   const save = (next: Place) => {
     setPlace(next)
     setError(null)
+    setVisible(PAGE_SIZE)
     try {
       window.localStorage.setItem(LOCATION_KEY, JSON.stringify(next))
     } catch {
@@ -47,7 +64,7 @@ export function FinderView({ events, listings, listingsAt, onAddSuggestion, onOp
 
   const detect = () => {
     if (!('geolocation' in navigator)) {
-      setError('This browser cannot share a location. Pick a city instead.')
+      setError('This device cannot share a location. Pick a city instead.')
       return
     }
     setLocating(true)
@@ -55,15 +72,13 @@ export function FinderView({ events, listings, listingsAt, onAddSuggestion, onOp
       (position) => {
         setLocating(false)
         const origin = {
-          label: 'Your location',
-          country: '',
           lat: Number(position.coords.latitude.toFixed(4)),
           lng: Number(position.coords.longitude.toFixed(4)),
         }
         const nearest = [...cityPresets].sort(
           (a, b) => distanceKm(origin, a) - distanceKm(origin, b),
         )[0]
-        save({ ...nearest, label: `Near ${nearest.label}`, lat: origin.lat, lng: origin.lng })
+        save({ ...nearest, ...origin, label: `Near ${nearest.label}` })
       },
       () => {
         setLocating(false)
@@ -73,11 +88,17 @@ export function FinderView({ events, listings, listingsAt, onAddSuggestion, onOp
     )
   }
 
-  const liveVisible = place
-    ? listings.filter((entry) => (place.country === 'IN' ? true : entry.mode === 'Online'))
-    : []
-
-  const results = place ? rankNearby(events, place) : []
+  const results = useMemo(
+    () => (place ? rankListings(listings, events, place) : []),
+    [listings, events, place],
+  )
+  const counts = useMemo(() => {
+    const totals: Record<Filter, number> = { all: results.length, go: 0, maybe: 0, skip: 0 }
+    for (const result of results) totals[result.verdict] += 1
+    return totals
+  }, [results])
+  const filtered = filter === 'all' ? results : results.filter((result) => result.verdict === filter)
+  const today = toISODate(new Date())
 
   return (
     <div className="view view--finder">
@@ -90,8 +111,8 @@ export function FinderView({ events, listings, listingsAt, onAddSuggestion, onOp
             Worth the trip, <em>or not?</em>
           </h1>
           <p>
-            Ranked from where you are, against the calendar you already keep — Indian
-            cities show Indian events, and online ones travel anywhere.
+            Real hackathons you can still join, judged by distance, your themes and the
+            dates already on your board.
           </p>
         </div>
         <div className="page-heading__actions">
@@ -150,8 +171,8 @@ export function FinderView({ events, listings, listingsAt, onAddSuggestion, onOp
           </span>
           <h3>Where are you building from?</h3>
           <p>
-            Share your location or pick a city, and every hackathon gets a distance, a
-            verdict, and the reason behind it.
+            Share your location or pick a city, and every open hackathon gets a verdict and
+            the reason behind it.
           </p>
           <div className="finder-empty-actions">
             <button className="btn btn-primary" onClick={detect}>
@@ -159,110 +180,95 @@ export function FinderView({ events, listings, listingsAt, onAddSuggestion, onOp
             </button>
           </div>
         </div>
-      ) : (
-        <div className="finder-list">
-          {results.map(({ entry, km, verdict, headline, reasons }) => (
-            <article className={`finder-row finder-row--${verdict}`} key={entry.id}>
-              <span className={`verdict verdict--${verdict}`}>
-                {verdict === 'go' ? 'Go' : verdict === 'maybe' ? 'Maybe' : 'Skip'}
-              </span>
-
-              <div className="finder-row__main">
-                <div className="finder-row__title">
-                  <h3>{entry.name}</h3>
-                  <span className="finder-row__meta">
-                    {entry.mode === 'Online' ? 'Online' : entry.mode} ·{' '}
-                    {formatRange(offset(entry.start), offset(entry.end))}
-                    {km !== null && <> · {km} km</>}
-                  </span>
-                </div>
-                <p className="finder-row__headline">{headline}</p>
-                <ul className="finder-row__reasons">
-                  {reasons.map((reason) => (
-                    <li key={reason}>{reason}</li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="finder-row__actions">
-                <a
-                  className="btn btn-quiet btn--compact"
-                  href={entry.applyUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Apply
-                </a>
-                <button className="btn btn-secondary btn--compact" onClick={() => onAddSuggestion(entry)}>
-                  <Plus size={14} /> Track it
-                </button>
-                <button
-                  className="text-link"
-                  onClick={() => {
-                    const tracked = events.find((event) => event.name === entry.name)
-                    if (tracked) onOpen(tracked)
-                  }}
-                  disabled={!events.some((event) => event.name === entry.name)}
-                >
-                  Open <ArrowUpRight size={13} />
-                </button>
-              </div>
-            </article>
-          ))}
+      ) : results.length === 0 ? (
+        <div className="empty-panel">
+          <span className="empty-panel__icon">
+            <Compass size={24} />
+          </span>
+          <h3>No open listings here right now</h3>
+          <p>Try another city, or browse the boards below.</p>
         </div>
-      )}
-
-      {liveVisible.length > 0 && (
-        <section className="live-card">
-          <div className="live-card__head">
-            <span className="eyebrow eyebrow--small">
-              <Sparkles size={12} /> Live right now
-            </span>
-            <h3>Open now, soonest deadline first</h3>
-            <p>
-              {listingsAt
-                ? `As of ${new Date(listingsAt).toLocaleDateString('en-IN', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                  })} — refresh with npm run fetch:hackathons.`
-                : 'Refresh with npm run fetch:hackathons.'}
-            </p>
+      ) : (
+        <>
+          <div className="finder-filters" role="group" aria-label="Filter by verdict">
+            {FILTERS.map(({ id, label }) => (
+              <button
+                key={id}
+                className={`city-chip ${filter === id ? 'is-active' : ''}`}
+                aria-pressed={filter === id}
+                onClick={() => {
+                  setFilter(id)
+                  setVisible(PAGE_SIZE)
+                }}
+              >
+                {label} · {counts[id]}
+              </button>
+            ))}
           </div>
-          <div className="live-list">
-            {liveVisible.slice(0, 12).map((entry) => (
-              <article className="live-row" key={entry.id}>
-                <div className="live-row__main">
-                  <strong>{entry.name}</strong>
-                  <small>
-                    {entry.organizer} · {entry.mode}
-                    {entry.startDate ? ` · ${formatRange(entry.startDate, entry.endDate || entry.startDate)}` : ''}
-                  </small>
+
+          <div className="finder-list">
+            {filtered.slice(0, visible).map(({ listing, km, verdict, headline, reasons }) => (
+              <article className={`finder-row finder-row--${verdict}`} key={listing.id}>
+                <span className={`verdict verdict--${verdict}`}>
+                  {verdict === 'go' ? 'Go' : verdict === 'maybe' ? 'Maybe' : 'Skip'}
+                </span>
+
+                <div className="finder-row__main">
+                  <div className="finder-row__title">
+                    <h3>{listing.name}</h3>
+                    <span className="finder-row__meta">
+                      {listing.mode}
+                      {listing.startDate && <> · {formatRange(listing.startDate, listing.endDate)}</>}
+                      {km !== null && <> · {km} km</>}
+                      {' · '}
+                      {deadlineIsEstimated(listing) ? 'Starts' : 'Apply by'}{' '}
+                      {listing.deadline === today ? 'today' : formatDate(listing.deadline)}
+                      {listing.prize && <> · {listing.prize}</>}
+                    </span>
+                  </div>
+                  <p className="finder-row__headline">{headline}</p>
+                  <ul className="finder-row__reasons">
+                    {reasons.map((reason) => (
+                      <li key={reason}>{reason}</li>
+                    ))}
+                  </ul>
                 </div>
-                <a
-                  className="btn btn-secondary btn--compact"
-                  href={entry.applyUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Apply <ArrowUpRight size={13} />
-                </a>
+
+                <div className="finder-row__actions">
+                  <a
+                    className="btn btn-quiet btn--compact"
+                    href={listing.applyUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Apply <ArrowUpRight size={13} />
+                  </a>
+                  <button className="btn btn-secondary btn--compact" onClick={() => onTrack(listing)}>
+                    <Plus size={14} /> Track it
+                  </button>
+                </div>
               </article>
             ))}
           </div>
-          {liveVisible.length > 12 && (
-            <p className="live-more">+{liveVisible.length - 12} more in the JSON — increase PAGES to see them.</p>
+
+          {filtered.length > visible && (
+            <button
+              className="btn btn-quiet finder-more"
+              onClick={() => setVisible((count) => count + PAGE_SIZE)}
+            >
+              Show more ({filtered.length - visible} left)
+            </button>
           )}
-        </section>
+        </>
       )}
 
       <section className="sources-card">
         <div className="sources-card__head">
           <span className="eyebrow eyebrow--small">
-            <Compass size={12} /> Real listings
+            <Compass size={12} /> Keep looking
           </span>
           <h3>Where India actually posts them</h3>
-          <p>Live search pages, opened in your browser — the app itself never scrapes them.</p>
+          <p>These boards open in your browser.</p>
         </div>
         <div className="sources-grid">
           {sources.map((source) => (
@@ -276,8 +282,8 @@ export function FinderView({ events, listings, listingsAt, onAddSuggestion, onOp
       </section>
 
       <p className="finder-note">
-        Distances are straight-line estimates against a curated set of events, not a live
-        directory. Always check the organizer&apos;s own page before booking travel.
+        {freshness(listingsAt)} Distances are straight-line estimates. Always check the
+        organizer&apos;s page before booking travel.
       </p>
     </div>
   )
