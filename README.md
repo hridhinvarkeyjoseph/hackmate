@@ -2,6 +2,8 @@
 
 **Find the hackathon worth your weekend, then actually ship for it.**
 
+**[Try it live](https://hridhinvarkeyjoseph.github.io/hackmate/)**, no sign-up needed.
+
 Students miss hackathons because listings are scattered, deadlines slip, and nobody knows if a trip is worth it. Hackmate pulls open hackathons into one place, tells you **Go, Maybe or Skip** with a reason, and turns your pick into a day-by-day plan.
 
 ![Near me ranks real hackathons with Go, Maybe and Skip](docs/screenshots/near-me.png)
