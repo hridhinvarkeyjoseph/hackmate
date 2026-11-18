@@ -161,7 +161,7 @@ function judgeTrip(
     }
   }
 
-  const away = `${km} km from ${place.label}.`
+  const away = km === 0 ? `Right in ${place.label}.` : `${km} km from ${place.label}.`
   if (km <= LOCAL_KM) {
     return { verdict: 'go', headline: 'Go: it is local', reasons: [away, 'Close enough to sleep at home.'] }
   }
@@ -169,6 +169,13 @@ function judgeTrip(
     return strong
       ? { verdict: 'go', headline: 'Go: short trip, strong match', reasons: [away, fit] }
       : { verdict: 'maybe', headline: 'Maybe: a short trip', reasons: [away, fit] }
+  }
+  if (listing.mode === 'Hybrid') {
+    return {
+      verdict: 'maybe',
+      headline: 'Maybe: far, but hybrid',
+      reasons: [away, 'Check if you can take part online.', fit],
+    }
   }
   return strong
     ? { verdict: 'maybe', headline: 'Maybe: far, but on theme', reasons: [away, fit] }

@@ -77,6 +77,10 @@ describe('rankListings', () => {
     expect(rank(listing({ location: 'Kolkata' })).verdict).toBe('skip')
   })
 
+  it('keeps a far hybrid event in play', () => {
+    expect(rank(listing({ location: 'Kolkata', mode: 'Hybrid' })).verdict).toBe('maybe')
+  })
+
   it('lifts a far event when themes match, ignoring case', () => {
     const result = rank(listing({ location: 'Kolkata', themes: ['AI', 'Design'] }), [
       board({ themes: ['ai', 'design'] }),
