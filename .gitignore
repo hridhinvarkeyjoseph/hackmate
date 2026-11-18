@@ -8,3 +8,5 @@ pastel-hackathon-tracker-app.json
 *.tsbuildinfo
 pastel-hackathon-tracker-app.json
 *.tsbuildinfo
+playwright-report
+test-results
