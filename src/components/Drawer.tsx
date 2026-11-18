@@ -12,7 +12,7 @@ const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
 export function Drawer({ onClose, children, label }: Props) {
-  const panelRef = useRef<HTMLElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow
@@ -75,7 +75,7 @@ export function Drawer({ onClose, children, label }: Props) {
         if (event.target === event.currentTarget) onClose()
       }}
     >
-      <aside
+      <div
         className="drawer"
         role="dialog"
         aria-modal="true"
@@ -87,7 +87,7 @@ export function Drawer({ onClose, children, label }: Props) {
           <X size={18} />
         </button>
         {children}
-      </aside>
+      </div>
     </div>
   )
 }
