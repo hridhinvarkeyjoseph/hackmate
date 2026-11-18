@@ -1,6 +1,6 @@
 import type { Hackathon } from '../types'
 import { daysBetween, parseDate, toISODate } from './date'
-import { listingKey, type LiveEvent } from './live'
+import { deadlineIsEstimated, listingKey, type LiveEvent } from './live'
 
 export type Place = {
   label: string
@@ -125,9 +125,12 @@ const isActive = (event: Hackathon) => !['Won', 'Completed'].includes(event.stat
 
 function deadlineReason(listing: LiveEvent, today: string): string | null {
   const days = daysBetween(parseDate(today), parseDate(listing.deadline))
-  if (days === 0) return 'Registration closes today.'
-  if (days <= URGENT_DAYS) return `Only ${days} day${days === 1 ? '' : 's'} left to register.`
-  return null
+  if (days > URGENT_DAYS) return null
+  const plural = days === 1 ? '' : 's'
+  if (deadlineIsEstimated(listing)) {
+    return days === 0 ? 'Starts today, so check if sign-ups are open.' : `Starts in ${days} day${plural}.`
+  }
+  return days === 0 ? 'Registration closes today.' : `Only ${days} day${plural} left to register.`
 }
 
 function judgeTrip(

@@ -103,6 +103,11 @@ describe('rankListings', () => {
     expect(rank(listing({ deadline: today })).reasons).toContain('Registration closes today.')
   })
 
+  it('does not invent a registration cutoff for Devfolio', () => {
+    const result = rank(listing({ source: 'devfolio', deadline: '2026-11-20' }))
+    expect(result.reasons).toContain('Starts in 2 days.')
+  })
+
   it('hides in-person events in another country', () => {
     expect(rankListings([listing()], [], london, today)).toEqual([])
   })
