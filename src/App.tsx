@@ -23,6 +23,7 @@ import { JoinPlanDrawer } from './components/JoinPlanDrawer'
 import { PitchDrawer } from './components/PitchDrawer'
 import { WelcomeDrawer, type WelcomeChoices } from './components/WelcomeDrawer'
 import { useLiveFeed } from './lib/useLiveFeed'
+import { useOnline } from './lib/useOnline'
 import { planSprint } from './lib/planner'
 import { hashForView, pageTitle, viewFromHash } from './lib/routes'
 import { readSharedPlan, sharePlan } from './lib/share'
@@ -32,6 +33,7 @@ import { listingToHackathon, type LiveEvent } from './lib/live'
 export default function App() {
   const [events, setEvents] = useState<Hackathon[]>(loadEvents)
   const { listings, generatedAt } = useLiveFeed()
+  const online = useOnline()
   const [theme, setTheme] = useState<Theme>(() => {
     try {
       const saved = window.localStorage.getItem('hackmate.theme')
@@ -474,6 +476,12 @@ export default function App() {
           onOpenProfile={openData}
           onToggleTheme={() => setTheme((current) => (current === 'dark' ? 'light' : 'dark'))}
         />
+
+        {!online && (
+          <p className="offline-note" role="status">
+            You&apos;re offline. Your board still works, but listings may be out of date.
+          </p>
+        )}
 
         <main className="main-content" id="main-content" tabIndex={-1}>
           {view === 'overview' && (

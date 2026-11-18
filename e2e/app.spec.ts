@@ -152,6 +152,15 @@ test('pages have their own links and Back works', async ({ page }) => {
   await expect(page.getByRole('heading', { name: /Your months/ })).toBeVisible()
 })
 
+test('the app says when it is offline', async ({ page, context }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Explore with sample data' }).click()
+  await context.setOffline(true)
+  await expect(page.getByText("You're offline")).toBeVisible()
+  await context.setOffline(false)
+  await expect(page.getByText("You're offline")).toHaveCount(0)
+})
+
 test('a visitor can explore the sample data', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Explore with sample data' }).click()
