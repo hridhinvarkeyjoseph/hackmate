@@ -26,6 +26,13 @@ const iso = (value) => (typeof value === 'string' && value.slice(0, 10)) || ''
 const mode = (region) =>
   region === 'online' ? 'Online' : region === 'hybrid' ? 'Hybrid' : 'In person'
 
+// Devfolio sends theme objects, Unstop sends strings. The app only wants names.
+const themeNames = (themes) =>
+  (Array.isArray(themes) ? themes : [])
+    .map((theme) => (typeof theme === 'string' ? theme : theme?.name))
+    .filter((name) => typeof name === 'string' && name && name !== 'No Restrictions')
+    .slice(0, 3)
+
 function toEvent(row) {
   const org = row.organisation?.name ?? 'Unstop host'
   const location = row.locations?.[0]?.name ?? (row.region === 'online' ? 'Online' : 'India')
@@ -78,7 +85,7 @@ async function fetchDevfolio() {
           organizer: pick(row, ['organizerName', 'organizer'], 'Devfolio host'),
           mode: online ? 'Online' : 'In person',
           location: pick(row, ['city', 'location'], online ? 'Online' : 'India'),
-          themes: Array.isArray(row?.themes) ? row.themes.slice(0, 3) : [],
+          themes: themeNames(row?.themes),
           prize: pick(row, ['prize', 'prizePool']),
           applyUrl: slug ? `https://devfolio.co/${slug}` : 'https://devfolio.co/hackathons',
           startDate: pick(row, ['startsAt', 'starts_at', 'startDate', 'start_date']).slice(0, 10),
