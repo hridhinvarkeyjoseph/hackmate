@@ -166,9 +166,10 @@ export async function downloadEvents(events: Hackathon[]): Promise<void> {
   }
 }
 
-/** True when there is real data and no recent export. */
+/** True when the user has added their own data and has no recent export. */
 export function backupDue(events: Hackathon[]): boolean {
-  if (events.length === 0) return false
+  const samples = new Set(sampleHackathons.map((event) => event.id))
+  if (events.every((event) => samples.has(event.id))) return false
   try {
     const last = window.localStorage.getItem(BACKUP_KEY)
     if (!last) return true
