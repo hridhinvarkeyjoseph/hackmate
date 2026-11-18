@@ -37,6 +37,10 @@ describe('suggestListings', () => {
     expect(result[0].listing.id).toBe('sooner')
   })
 
+  it('explains picks for someone with no history', () => {
+    expect(suggestListings([listing('first', [])], [])[0].reason).toContain('nearest deadlines')
+  })
+
   it('leaves out what is already tracked', () => {
     expect(suggestListings([listing('Mine', ['AI'])], mine)).toEqual([])
   })

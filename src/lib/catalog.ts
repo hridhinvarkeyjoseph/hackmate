@@ -40,7 +40,9 @@ export function suggestListings(
           ? `Fits your interest in ${matched.slice(0, 2).join(' and ')}`
           : listing.mode === favouriteMode
             ? `Another ${listing.mode.toLowerCase()} one, like most of your picks`
-            : 'Something a little different from your usual'
+            : themeCounts.size === 0
+              ? 'Open now, with one of the nearest deadlines'
+              : 'Something a little different from your usual'
       return { listing, score, reason }
     })
     .sort((a, b) => b.score - a.score || a.listing.deadline.localeCompare(b.listing.deadline))
