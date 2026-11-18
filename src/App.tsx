@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { AlertTriangle, Check, Sparkles } from 'lucide-react'
 import type { Hackathon, Theme, ViewName } from './types'
 import { sampleHackathons } from './data'
-import { addDays, daysUntil, toISODate } from './lib/date'
+import { daysUntil } from './lib/date'
 import { backupDue, loadEvents, makeId, saveEvents } from './lib/storage'
 import { runReminders } from './lib/reminders'
 import { loadProfile, saveProfile } from './lib/profile'
@@ -19,7 +19,6 @@ import { DataDrawer } from './components/DataDrawer'
 import { SuggestView } from './components/SuggestView'
 import { FinderView } from './components/FinderView'
 import { TimerWidget } from './components/TimerWidget'
-import type { CatalogEntry } from './lib/catalog'
 import { useLiveFeed } from './lib/useLiveFeed'
 import { listingToHackathon, type LiveEvent } from './lib/live'
 
@@ -217,37 +216,6 @@ export default function App() {
     notify('A fresh sample season, ready to explore.')
   }, [notify])
 
-  const handleAddSuggestion = useCallback(
-    (entry: CatalogEntry) => {
-      const today = new Date()
-      const saved: Hackathon = {
-        id: makeId('hm'),
-        name: entry.name,
-        organizer: entry.organizer,
-        mode: entry.mode,
-        location: entry.location,
-        startDate: toISODate(addDays(today, entry.start)),
-        endDate: toISODate(addDays(today, entry.end)),
-        deadline: toISODate(addDays(today, entry.deadline)),
-        status: 'Idea',
-        prize: entry.prize,
-        teamSize: 3,
-        themes: entry.themes,
-        notes: entry.blurb,
-        website: entry.website,
-        favorite: false,
-        createdAt: new Date().toISOString(),
-        team: [],
-        tasks: [],
-        submission: { repo: '', demo: '', video: '' },
-      }
-      setEvents((previous) => [saved, ...previous])
-      setDetailId(saved.id)
-      notify(`${entry.name} is on your board.`)
-    },
-    [notify],
-  )
-
   const handleTrackListing = useCallback(
     (listing: LiveEvent) => {
       const saved = listingToHackathon(listing, makeId('hm'), new Date().toISOString())
@@ -404,7 +372,8 @@ export default function App() {
           {view === 'suggest' && (
             <SuggestView
               events={events}
-              onAddSuggestion={handleAddSuggestion}
+              listings={listings}
+              onTrack={handleTrackListing}
               onOpen={openEvent}
               onAdd={openNew}
             />

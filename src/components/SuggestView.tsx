@@ -1,19 +1,19 @@
 import { ArrowRight, ArrowUpRight, Compass, ExternalLink, Plus, Sparkles, Wand2 } from 'lucide-react'
 import type { Hackathon } from '../types'
-import { addDays, formatRange, toISODate } from '../lib/date'
-import { nextSteps, suggestHackathons, type CatalogEntry } from '../lib/catalog'
+import { formatRange } from '../lib/date'
+import { nextSteps, suggestListings } from '../lib/catalog'
+import type { LiveEvent } from '../lib/live'
 
 type Props = {
   events: Hackathon[]
-  onAddSuggestion: (entry: CatalogEntry) => void
+  listings: LiveEvent[]
+  onTrack: (listing: LiveEvent) => void
   onOpen: (event: Hackathon) => void
   onAdd: () => void
 }
 
-const offset = (days: number) => toISODate(addDays(new Date(), days))
-
-export function SuggestView({ events, onAddSuggestion, onOpen, onAdd }: Props) {
-  const suggestions = suggestHackathons(events)
+export function SuggestView({ events, listings, onTrack, onOpen, onAdd }: Props) {
+  const suggestions = suggestListings(listings, events)
   const steps = nextSteps(events)
   const themes = [...new Set(events.flatMap((event) => event.themes))].slice(0, 6)
 
@@ -58,7 +58,7 @@ export function SuggestView({ events, onAddSuggestion, onOpen, onAdd }: Props) {
                 <h2>Worth a look</h2>
                 <span className="count-chip count-chip--soft">{suggestions.length}</span>
               </div>
-              <p>Curated starting points — add one and make it yours.</p>
+              <p>Open right now and chosen from what you already enter.</p>
             </div>
           </div>
 
@@ -67,15 +67,12 @@ export function SuggestView({ events, onAddSuggestion, onOpen, onAdd }: Props) {
               <span className="empty-panel__icon">
                 <Compass size={24} />
               </span>
-              <h3>Live listings live in Near me</h3>
-              <p>
-                The curated shelf is gone — real hackathons are pulled from Unstop and
-                Devfolio. Open Near me to browse them by location.
-              </p>
+              <h3>No open listings to suggest</h3>
+              <p>You are tracking everything on the list, or the listings could not load.</p>
             </div>
           ) : (
           <div className="suggest-grid">
-            {suggestions.map(({ entry, reason }) => (
+            {suggestions.map(({ listing: entry, reason }) => (
               <article className="suggest-card" key={entry.id}>
                 <div className="suggest-card__top">
                   <span className={`mode-pill mode-pill--${entry.mode.toLowerCase().replace(' ', '-')}`}>
@@ -85,7 +82,7 @@ export function SuggestView({ events, onAddSuggestion, onOpen, onAdd }: Props) {
                 </div>
                 <h3>{entry.name}</h3>
                 <p className="suggest-card__organizer">{entry.organizer}</p>
-                <p className="suggest-card__blurb">{entry.blurb}</p>
+                <p className="suggest-card__blurb">{entry.location}</p>
                 <div className="tag-row">
                   {entry.themes.slice(0, 3).map((theme) => (
                     <span className="tag" key={theme}>
@@ -94,13 +91,13 @@ export function SuggestView({ events, onAddSuggestion, onOpen, onAdd }: Props) {
                   ))}
                 </div>
                 <p className="suggest-card__dates">
-                  {formatRange(offset(entry.start), offset(entry.end))}
+                  {formatRange(entry.startDate, entry.endDate)}
                 </p>
                 <p className="suggest-card__reason">
                   <Sparkles size={13} /> {reason}
                 </p>
                 <div className="suggest-card__actions">
-                  <button className="btn btn-secondary" onClick={() => onAddSuggestion(entry)}>
+                  <button className="btn btn-secondary" onClick={() => onTrack(entry)}>
                     <Plus size={15} /> Add to my board
                   </button>
                   <a

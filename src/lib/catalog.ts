@@ -1,62 +1,43 @@
 import type { Hackathon } from '../types'
+import { listingKey, type LiveEvent } from './live'
 
-export type CatalogEntry = {
-  id: string
-  name: string
-  organizer: string
-  mode: Hackathon['mode']
-  location: string
-  themes: string[]
-  prize: string
-  blurb: string
-  website: string
-  country: string
-  applyUrl: string
-  start: number
-  end: number
-  deadline: number
-}
+export type Suggestion = { listing: LiveEvent; score: number; reason: string }
 
-/** India-first shelf of representative events. Proposals, not live listings. */
-export const catalog: CatalogEntry[] = []
-
-export type Suggestion = { entry: CatalogEntry; score: number; reason: string }
-
-export function suggestHackathons(events: Hackathon[], limit = 4): Suggestion[] {
-  if (events.length === 0) {
-    return catalog.slice(0, limit).map((entry) => ({
-      entry,
-      score: 0,
-      reason: 'A good place to start your season.',
-    }))
-  }
-
+/** Picks open listings that look like what the user already enters. */
+export function suggestListings(
+  listings: LiveEvent[],
+  events: Hackathon[],
+  limit = 4,
+): Suggestion[] {
   const themeCounts = new Map<string, number>()
   const modeCounts = new Map<string, number>()
   for (const event of events) {
-    for (const theme of event.themes) themeCounts.set(theme, (themeCounts.get(theme) ?? 0) + 1)
+    for (const theme of event.themes) {
+      const key = theme.toLowerCase()
+      themeCounts.set(key, (themeCounts.get(key) ?? 0) + 1)
+    }
     modeCounts.set(event.mode, (modeCounts.get(event.mode) ?? 0) + 1)
   }
 
   const favouriteMode = [...modeCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0]
-  const trackedNames = new Set(events.map((event) => event.name.toLowerCase()))
+  const tracked = new Set(events.map((event) => listingKey(event.name)))
 
-  return catalog
-    .filter((entry) => !trackedNames.has(entry.name.toLowerCase()))
-    .map((entry) => {
-      const matched = entry.themes.filter((theme) => themeCounts.has(theme))
+  return listings
+    .filter((listing) => !tracked.has(listingKey(listing.name)))
+    .map((listing) => {
+      const matched = listing.themes.filter((theme) => themeCounts.has(theme.toLowerCase()))
       const score =
-        matched.reduce((total, theme) => total + (themeCounts.get(theme) ?? 0) * 3, 0) +
-        (entry.mode === favouriteMode ? 2 : 0)
+        matched.reduce((total, theme) => total + (themeCounts.get(theme.toLowerCase()) ?? 0) * 3, 0) +
+        (listing.mode === favouriteMode ? 2 : 0)
       const reason =
         matched.length > 0
           ? `Because you keep choosing ${matched.slice(0, 2).join(' and ')}`
-          : entry.mode === favouriteMode
-            ? `Another ${entry.mode.toLowerCase()} one, like most of your picks`
+          : listing.mode === favouriteMode
+            ? `Another ${listing.mode.toLowerCase()} one, like most of your picks`
             : 'Something a little different from your usual'
-      return { entry, score, reason }
+      return { listing, score, reason }
     })
-    .sort((a, b) => b.score - a.score)
+    .sort((a, b) => b.score - a.score || a.listing.deadline.localeCompare(b.listing.deadline))
     .slice(0, limit)
 }
 
