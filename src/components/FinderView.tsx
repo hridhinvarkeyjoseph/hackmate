@@ -4,7 +4,7 @@ import type { Hackathon } from '../types'
 import { daysBetween, formatDate, formatRange, toISODate } from '../lib/date'
 import { cityPresets, distanceKm, rankListings, type Place, type Verdict } from '../lib/finder'
 import { sources } from '../lib/catalog'
-import { savePlace } from '../lib/profile'
+import { forgetPlace, loadPlace, savePlace } from '../lib/profile'
 import { deadlineIsEstimated, type LiveEvent } from '../lib/live'
 
 type Props = {
@@ -17,7 +17,6 @@ type Props = {
 
 type Filter = 'all' | Verdict
 
-const LOCATION_KEY = 'hackmate.place.v1'
 const PAGE_SIZE = 12
 const FILTERS: Array<{ id: Filter; label: string }> = [
   { id: 'all', label: 'All' },
@@ -25,17 +24,6 @@ const FILTERS: Array<{ id: Filter; label: string }> = [
   { id: 'maybe', label: 'Maybe' },
   { id: 'skip', label: 'Skip' },
 ]
-
-const readPlace = (): Place | null => {
-  try {
-    const raw = window.localStorage.getItem(LOCATION_KEY)
-    if (!raw) return null
-    const parsed = JSON.parse(raw) as Place
-    return typeof parsed?.lat === 'number' ? parsed : null
-  } catch {
-    return null
-  }
-}
 
 function freshness(generatedAt: string): string {
   if (!generatedAt) return ''
@@ -47,9 +35,10 @@ function freshness(generatedAt: string): string {
 }
 
 export function FinderView({ events, listings, listingsAt, interests, onTrack }: Props) {
-  const [place, setPlace] = useState<Place | null>(readPlace)
+  const [place, setPlace] = useState<Place | null>(loadPlace)
   const [error, setError] = useState<string | null>(null)
   const [locating, setLocating] = useState(false)
+  const [changingCity, setChangingCity] = useState(false)
   const [filter, setFilter] = useState<Filter>('all')
   const [visible, setVisible] = useState(PAGE_SIZE)
 
@@ -57,6 +46,7 @@ export function FinderView({ events, listings, listingsAt, interests, onTrack }:
     setPlace(next)
     setError(null)
     setVisible(PAGE_SIZE)
+    setChangingCity(false)
     savePlace(next)
   }
 
@@ -130,25 +120,32 @@ export function FinderView({ events, listings, listingsAt, interests, onTrack }:
             </small>
           )}
         </div>
-        <div className="finder-locator__cities">
-          {cityPresets.map((city) => (
-            <button
-              key={city.label}
-              className={`city-chip ${place?.label === city.label ? 'is-active' : ''}`}
-              onClick={() => save(city)}
-            >
-              {city.label}
-              {place?.label === city.label && <Check size={12} strokeWidth={3} />}
-            </button>
-          ))}
-        </div>
+        {place && !changingCity ? (
+          <button className="btn btn-quiet btn--compact" onClick={() => setChangingCity(true)}>
+            Change city
+          </button>
+        ) : (
+          <div className="finder-locator__cities">
+            {cityPresets.map((city) => (
+              <button
+                key={city.label}
+                className={`city-chip ${place?.label === city.label ? 'is-active' : ''}`}
+                onClick={() => save(city)}
+              >
+                {city.label}
+                {place?.label === city.label && <Check size={12} strokeWidth={3} />}
+              </button>
+            ))}
+          </div>
+        )}
         {place && (
           <button
             className="icon-button finder-locator__clear"
             aria-label="Forget location"
             onClick={() => {
               setPlace(null)
-              window.localStorage.removeItem(LOCATION_KEY)
+              setChangingCity(false)
+              forgetPlace()
             }}
           >
             <X size={15} />
@@ -217,7 +214,7 @@ export function FinderView({ events, listings, listingsAt, interests, onTrack }:
                     <span className="finder-row__meta">
                       {listing.mode}
                       {listing.startDate && <> · {formatRange(listing.startDate, listing.endDate)}</>}
-                      {km !== null && <> · {km} km</>}
+                      {km !== null && km > 0 && <> · {km} km</>}
                       {' · '}
                       {deadlineIsEstimated(listing) ? 'Starts' : 'Apply by'}{' '}
                       {listing.deadline === today ? 'today' : formatDate(listing.deadline)}

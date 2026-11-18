@@ -60,6 +60,25 @@ export function markOnboarded(): void {
   }
 }
 
+export function loadPlace(): Place | null {
+  try {
+    const raw = window.localStorage.getItem(PLACE_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as Place
+    return typeof parsed?.lat === 'number' ? parsed : null
+  } catch {
+    return null
+  }
+}
+
+export function forgetPlace(): void {
+  try {
+    window.localStorage.removeItem(PLACE_KEY)
+  } catch {
+    // Nothing to clean up if storage is blocked.
+  }
+}
+
 export function savePlace(place: Place): void {
   try {
     window.localStorage.setItem(PLACE_KEY, JSON.stringify(place))
