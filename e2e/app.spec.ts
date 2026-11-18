@@ -64,6 +64,14 @@ test('a new visitor gets ranked, open hackathons', async ({ page }) => {
   await expect(page.locator('.finder-row')).toHaveCount(1)
 })
 
+test('results come first, and the city can still be changed', async ({ page }) => {
+  await finishSetup(page)
+  await expect(page.locator('.finder-locator__cities')).toHaveCount(0)
+  await page.getByRole('button', { name: 'Change city' }).click()
+  await page.getByRole('button', { name: 'New Delhi, IN' }).click()
+  await expect(row(page, 'Faraway Summit').locator('.verdict')).toHaveText('Go')
+})
+
 test('a tracked hackathon becomes a saved plan', async ({ page }) => {
   await finishSetup(page)
   await row(page, 'Open AI Jam').getByRole('button', { name: 'Track it' }).click()
