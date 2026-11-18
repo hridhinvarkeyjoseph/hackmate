@@ -9,7 +9,7 @@ const event: Hackathon = {
   notes: 'Private idea',
   website: 'https://example.com',
   team: [{ id: 't', name: 'Asha', role: 'Dev' }],
-  tasks: [{ id: 'a', label: 'Build it', done: true }],
+  tasks: [{ id: 'a', label: 'Build it', done: true, dueDate: '2026-12-01' }],
   submission: { repo: 'https://secret.dev', demo: '', video: '' },
 }
 
@@ -21,6 +21,15 @@ describe('share links', () => {
     expect(result?.name).toBe(event.name)
     expect(result?.deadline).toBe(event.deadline)
     expect(result?.tasks.map((task) => task.label)).toEqual(['Build it'])
+  })
+
+  it('keeps task due dates', () => {
+    expect(decodePlan(encodePlan(event))?.tasks[0].dueDate).toBe('2026-12-01')
+  })
+
+  it('still opens older links with plain task names', () => {
+    const result = decodePlan(encodeRaw({ name: 'Old', tasks: ['Build it'] }))
+    expect(result?.tasks[0].label).toBe('Build it')
   })
 
   it('gives the teammate a fresh copy', () => {

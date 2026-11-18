@@ -432,6 +432,7 @@ export default function App() {
               onOpen={openEvent}
               onAdd={openNew}
               onToggleFavorite={toggleFavorite}
+              onToggleTask={toggleTask}
               onNavigate={navigate}
             />
           )}

@@ -23,6 +23,7 @@ export type Task = {
   id: string
   label: string
   done: boolean
+  dueDate?: string
 }
 
 export type Submission = {

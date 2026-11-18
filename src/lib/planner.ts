@@ -33,10 +33,9 @@ export function planSprint(
   const existing = event.tasks.map((task) => task.label.toLowerCase())
 
   return PHASES.filter(([, label]) => !existing.some((task) => task.includes(label.toLowerCase()))).map(
-    ([share, label]) => ({
-      id: makeTaskId(),
-      label: `${formatDate(toISODate(addDays(start, Math.floor(span * share))))}: ${label}`,
-      done: false,
-    }),
+    ([share, label]) => {
+      const dueDate = toISODate(addDays(start, Math.floor(span * share)))
+      return { id: makeTaskId(), label: `${formatDate(dueDate)}: ${label}`, done: false, dueDate }
+    },
   )
 }

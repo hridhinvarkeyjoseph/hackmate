@@ -25,6 +25,7 @@ import {
 import { HackathonCard } from './HackathonCard'
 import { firstName, loadPlace } from '../lib/profile'
 import { rankListings } from '../lib/finder'
+import { todaysFocus } from '../lib/today'
 
 type Props = {
   events: Hackathon[]
@@ -34,6 +35,7 @@ type Props = {
   onOpen: (event: Hackathon) => void
   onAdd: () => void
   onToggleFavorite: (id: string) => void
+  onToggleTask: (eventId: string, taskId: string) => void
   onNavigate: (view: ViewName) => void
 }
 
@@ -69,9 +71,10 @@ function StatCard({
   )
 }
 
-export function OverviewView({ events, listings, interests, userName, onOpen, onAdd, onToggleFavorite, onNavigate }: Props) {
+export function OverviewView({ events, listings, interests, userName, onOpen, onAdd, onToggleFavorite, onToggleTask, onNavigate }: Props) {
   const [now, setNow] = useState(() => new Date())
 
+  const focus = todaysFocus(events, now)
   const place = loadPlace()
   const city = place ? place.label.replace(/^Near /, '').split(',')[0].trim() : ''
   const nearbyLive = (
@@ -210,6 +213,35 @@ export function OverviewView({ events, listings, interests, userName, onOpen, on
           tone="lilac"
         />
       </section>
+
+      {focus.length > 0 && (
+        <section className="today-focus" aria-label="Today's focus">
+          <div className="section-heading section-heading--tight">
+            <div>
+              <h2>Today&apos;s focus</h2>
+              <p>The next steps from your sprint plans.</p>
+            </div>
+          </div>
+          <ul className="today-focus__list">
+            {focus.map(({ event, task, title, when, tone }) => (
+              <li key={task.id}>
+                <button
+                  className="task-check"
+                  aria-label={`Mark done: ${title}`}
+                  onClick={() => onToggleTask(event.id, task.id)}
+                />
+                <div>
+                  <strong>{title}</strong>
+                  <button className="today-focus__event" onClick={() => onOpen(event)}>
+                    {event.name}
+                  </button>
+                </div>
+                <span className={`today-focus__when today-focus__when--${tone}`}>{when}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {nearbyLive.length > 0 && (
         <section className="nearby-strip">

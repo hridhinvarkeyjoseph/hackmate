@@ -1409,3 +1409,74 @@ html[data-theme='dark'] .new-hack-tile__icon {
   align-items: center;
   gap: 8px;
 }
+
+/* --- today's focus --- */
+.today-focus {
+  margin: 18px 0 22px;
+}
+
+.today-focus__list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.today-focus__list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.today-focus__list li > div {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.today-focus__list strong {
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.today-focus__event {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.today-focus__event:hover {
+  color: var(--forest);
+  text-decoration: underline;
+}
+
+.today-focus__when {
+  flex: none;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.today-focus__when--late {
+  color: #a8402f;
+}
+
+html[data-theme='dark'] .today-focus__when--late {
+  color: #f0a597;
+}
+
+.today-focus__when--today {
+  color: var(--mint-600);
+}

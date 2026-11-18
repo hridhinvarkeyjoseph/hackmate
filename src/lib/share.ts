@@ -19,7 +19,7 @@ type SharedPlan = Pick<
   | 'teamSize'
   | 'themes'
   | 'website'
-> & { tasks: string[] }
+> & { tasks: Array<string | { label: string; dueDate?: string }> }
 
 function toBase64Url(text: string): string {
   let binary = ''
@@ -47,7 +47,7 @@ export function encodePlan(event: Hackathon): string {
     teamSize: event.teamSize,
     themes: event.themes,
     website: event.website,
-    tasks: event.tasks.map((task) => task.label),
+    tasks: event.tasks.map(({ label, dueDate }) => ({ label, dueDate })),
   }
   return toBase64Url(JSON.stringify(plan))
 }
@@ -63,7 +63,11 @@ export function decodePlan(encoded: string): Hackathon | null {
         ...plan,
         id: makeId('hm'),
         status: 'Registered',
-        tasks: labels.map((label) => ({ id: makeId('task'), label, done: false })),
+        tasks: labels.map((task) => ({
+          ...(typeof task === 'string' ? { label: task } : task),
+          id: makeId('task'),
+          done: false,
+        })),
       },
     ])
     return event ?? null

@@ -59,6 +59,9 @@ const normalizeTasks = (value: unknown): Task[] => {
         id: asString(entry.id) || `hm-task-${index}`,
         label,
         done: entry.done === true,
+        ...(/^\d{4}-\d{2}-\d{2}$/.test(asString(entry.dueDate))
+          ? { dueDate: asString(entry.dueDate) }
+          : {}),
       }
     })
     .filter((entry): entry is Task => entry !== null)
