@@ -4,6 +4,8 @@
 
 **[Try it live](https://hridhinvarkeyjoseph.github.io/hackmate/)**, no sign-up needed.
 
+[![CI](https://github.com/hridhinvarkeyjoseph/hackmate/actions/workflows/ci.yml/badge.svg)](https://github.com/hridhinvarkeyjoseph/hackmate/actions/workflows/ci.yml)
+
 Students miss hackathons because listings are scattered, deadlines slip, and nobody knows if a trip is worth it. Hackmate pulls open hackathons into one place, tells you **Go, Maybe or Skip** with a reason, and turns your pick into a day-by-day plan.
 
 ![Near me ranks real hackathons with Go, Maybe and Skip](docs/screenshots/near-me.png)
@@ -11,9 +13,11 @@ Students miss hackathons because listings are scattered, deadlines slip, and nob
 ## What makes it different
 
 - **Go / Maybe / Skip on real listings.** Each open hackathon from Unstop and Devfolio is judged on distance, how well it matches your themes, and clashes with your calendar. Every verdict shows its reasons.
+- **Personal from the first minute.** Pick your city and interests, and the rankings adapt straight away.
 - **Sprint planner.** One tap spreads a proven hackathon routine across the days you really have.
 - **Submission readiness score.** A live percentage and the three things that would raise it most.
 - **Portfolio export.** Turns what you shipped into a Markdown page for GitHub or a resume.
+- **Team plans with no accounts.** A share link carries the plan to teammates, while your notes, team names and submission links stay out of it.
 - **Private by design.** No account and no server. Your data stays on your device.
 - **Works everywhere.** Installable web app, offline support, and an Android app with system reminders.
 
@@ -46,10 +50,13 @@ The logic lives in small, tested modules in `src/lib`:
 | `planner.ts` | Builds the sprint plan |
 | `readiness.ts` | Scores submission readiness |
 | `portfolio.ts` | Writes the Markdown portfolio |
+| `share.ts` | Creates and safely reads team share links |
 | `reminders.ts` | Schedules deadline reminders |
 | `platform.ts` | Handles file export on web and Android |
 
-**Stack:** React 19, TypeScript, Vite, Capacitor, Vitest, GitHub Actions, hand-written CSS.
+**Stack:** React 19, TypeScript, Vite, Capacitor, hand-written CSS.
+
+**Quality:** every push runs ESLint, type checks, Vitest unit tests, and Playwright browser tests that include automated accessibility checks. Data from feeds, backups and share links is validated before use.
 
 ## Run it
 
@@ -61,6 +68,8 @@ npm run dev
 | Command | What it does |
 | --- | --- |
 | `npm test` | Runs the unit tests |
+| `npm run test:e2e` | Runs the browser tests |
+| `npm run lint` | Checks code quality |
 | `npm run build` | Type-checks and builds to `dist/` |
 | `npm run preview` | Serves the production build |
 | `npm run fetch:hackathons` | Refreshes the listings |
