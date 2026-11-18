@@ -29,7 +29,10 @@ export function buildPortfolio(events: Hackathon[], name: string): string {
         .join(' · '),
     )
     if (event.status === 'Won' && event.prize) lines.push('', `Prize: ${clean(event.prize)}`)
-    if (event.notes.trim()) lines.push('', clean(event.notes))
+    const summary = event.pitch?.solution.trim()
+      ? `${clean(event.pitch.project) || 'Built'}: ${clean(event.pitch.solution)}`
+      : clean(event.notes)
+    if (summary) lines.push('', summary)
     const links = [
       ['Code', event.submission.repo],
       ['Demo', event.submission.demo],

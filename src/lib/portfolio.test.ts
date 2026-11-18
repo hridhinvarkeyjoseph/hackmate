@@ -32,6 +32,20 @@ describe('buildPortfolio', () => {
     expect(result).toContain('Prize: ₹50,000')
   })
 
+  it('prefers the pitch over private-style notes', () => {
+    const result = buildPortfolio(
+      [
+        event({
+          notes: 'Rough note',
+          pitch: { project: 'App', problem: '', audience: '', solution: 'it helps', demo: '', impact: '' },
+        }),
+      ],
+      '',
+    )
+    expect(result).toContain('App: it helps')
+    expect(result).not.toContain('Rough note')
+  })
+
   it('lists only the links that exist, newest event first', () => {
     const result = buildPortfolio(
       [
