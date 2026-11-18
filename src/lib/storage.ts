@@ -1,3 +1,4 @@
+import { saveTextFile } from './platform'
 import type { Hackathon, Mode, Status, Submission, Task, TeamMember } from '../types'
 import { MODES, STATUSES } from '../types'
 import { sampleHackathons } from '../data'
@@ -145,7 +146,7 @@ export function saveEvents(events: Hackathon[]): boolean {
   }
 }
 
-export function downloadEvents(events: Hackathon[]): void {
+export async function downloadEvents(events: Hackathon[]): Promise<void> {
   const payload = {
     app: 'hackmate',
     version: SCHEMA_VERSION,
@@ -153,17 +154,11 @@ export function downloadEvents(events: Hackathon[]): void {
     count: events.length,
     events,
   }
-  const blob = new Blob([JSON.stringify(payload, null, 2)], {
-    type: 'application/json',
-  })
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement('a')
-  link.href = url
-  link.download = `hackmate-${toISODate(new Date())}.json`
-  document.body.appendChild(link)
-  link.click()
-  link.remove()
-  window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+  await saveTextFile(
+    `hackmate-${toISODate(new Date())}.json`,
+    JSON.stringify(payload, null, 2),
+    'application/json',
+  )
   try {
     window.localStorage.setItem(BACKUP_KEY, String(Date.now()))
   } catch {

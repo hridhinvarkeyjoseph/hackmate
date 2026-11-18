@@ -80,7 +80,7 @@ export function DataDrawer({ events, userName, onNameChange, onClose, onImport, 
           </div>
           <button
             className="btn btn-secondary btn--compact"
-            onClick={() => downloadEvents(events)}
+            onClick={() => void downloadEvents(events).catch(() => setError('The backup was not saved.'))}
           >
             Export
           </button>
@@ -123,7 +123,7 @@ export function DataDrawer({ events, userName, onNameChange, onClose, onImport, 
           </div>
           <button
             className="btn btn-secondary btn--compact"
-            onClick={() => downloadICS(events)}
+            onClick={() => void downloadICS(events).catch(() => setError('The calendar file was not saved.'))}
           >
             Export .ics
           </button>
@@ -138,7 +138,7 @@ export function DataDrawer({ events, userName, onNameChange, onClose, onImport, 
             <small>
               {remindersOn
                 ? 'On — you will hear about deadlines two days out.'
-                : 'Get a browser nudge before a deadline slips past.'}
+                : 'Get a nudge before a deadline slips past.'}
             </small>
           </div>
           <button
@@ -152,7 +152,7 @@ export function DataDrawer({ events, userName, onNameChange, onClose, onImport, 
               const granted = await enableReminders()
               setRemindersOn(granted)
               if (!granted) {
-                setError('Notifications are blocked in this browser. Allow them in site settings to use reminders.')
+                setError('Notifications are blocked. Allow them in your settings to use reminders.')
               }
             }}
           >

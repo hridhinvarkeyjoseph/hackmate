@@ -1,3 +1,4 @@
+import { saveTextFile } from './platform'
 import type { Hackathon } from '../types'
 import { parseDate } from './date'
 
@@ -78,14 +79,6 @@ export function buildICS(events: Hackathon[]): string {
   return zip(body.filter((line) => line !== '').join('\r\n'))
 }
 
-export function downloadICS(events: Hackathon[]): void {
-  const blob = new Blob([buildICS(events)], { type: 'text/calendar;charset=utf-8' })
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement('a')
-  link.href = url
-  link.download = 'hackmate-season.ics'
-  document.body.appendChild(link)
-  link.click()
-  link.remove()
-  window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+export function downloadICS(events: Hackathon[]): Promise<void> {
+  return saveTextFile('hackmate-season.ics', buildICS(events), 'text/calendar;charset=utf-8')
 }
