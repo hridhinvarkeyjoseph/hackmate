@@ -374,3 +374,8 @@ html[data-theme='dark'] .timer__fab {
   border-color: var(--line-strong);
   color: #eafff6;
 }
+
+html[data-theme='dark'] .verdict--skip {
+  background: #2a3a35;
+  color: #d5e1dc;
+}
