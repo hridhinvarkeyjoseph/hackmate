@@ -1,6 +1,6 @@
+import { addDays, formatDate, parseDate, toISODate } from './date'
 import { saveTextFile } from './platform'
 import type { Hackathon } from '../types'
-import { parseDate } from './date'
 
 const pad = (value: number) => String(value).padStart(2, '0')
 
@@ -81,4 +81,25 @@ export function buildICS(events: Hackathon[]): string {
 
 export function downloadICS(events: Hackathon[]): Promise<void> {
   return saveTextFile('hackmate-season.ics', buildICS(events), 'text/calendar;charset=utf-8')
+}
+
+const compactDate = (date: Date) => toISODate(date).replace(/-/g, '')
+
+/** Opens Google Calendar with this hackathon filled in. */
+export function googleCalendarUrl(event: Hackathon): string {
+  const end = addDays(parseDate(event.endDate), 1) // Google treats the end date as exclusive.
+  const details = [
+    `Deadline: ${formatDate(event.deadline)}`,
+    /^https?:/i.test(event.website) ? event.website : '',
+  ]
+    .filter(Boolean)
+    .join('\n')
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: event.name,
+    dates: `${compactDate(parseDate(event.startDate))}/${compactDate(end)}`,
+    details,
+    location: event.location,
+  })
+  return `https://calendar.google.com/calendar/render?${params}`
 }

@@ -17,6 +17,7 @@ import {
   MonitorPlay,
   Video,
   ListChecks,
+  CalendarPlus,
   Mic,
   Share2,
   Gauge,
@@ -26,6 +27,7 @@ import {
 import type { Hackathon } from '../types'
 import { daysUntil, deadlineLabel, formatDate, formatRange, parseDate, startOfDay } from '../lib/date'
 import { planSprint } from '../lib/planner'
+import { googleCalendarUrl } from '../lib/ics'
 import { pitchProgress } from '../lib/pitch'
 import { assessReadiness } from '../lib/readiness'
 import { StatusBadge } from './StatusBadge'
@@ -226,6 +228,15 @@ export function DetailDrawer({
       <button className="btn btn-secondary detail-plan" onClick={() => onPitch(event)}>
         <Mic size={15} /> {pitchProgress(event.pitch) > 0 ? 'Edit my pitch' : 'Write my pitch'}
       </button>
+
+      <a
+        className="btn btn-quiet detail-plan"
+        href={googleCalendarUrl(event)}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <CalendarPlus size={15} /> Add to Google Calendar
+      </a>
 
       <button className="btn btn-quiet detail-plan" onClick={() => onShare(event)}>
         <Share2 size={15} /> Share plan with my team
