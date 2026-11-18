@@ -17,6 +17,7 @@ import {
   MonitorPlay,
   Video,
   ListChecks,
+  Mic,
   Share2,
   Gauge,
   Wand2,
@@ -25,6 +26,7 @@ import {
 import type { Hackathon } from '../types'
 import { daysUntil, deadlineLabel, formatDate, formatRange, parseDate, startOfDay } from '../lib/date'
 import { planSprint } from '../lib/planner'
+import { pitchProgress } from '../lib/pitch'
 import { assessReadiness } from '../lib/readiness'
 import { StatusBadge } from './StatusBadge'
 import { Drawer } from './Drawer'
@@ -38,6 +40,7 @@ type Props = {
   onToggleTask: (eventId: string, taskId: string) => void
   onPlanSprint: (eventId: string) => void
   onShare: (event: Hackathon) => void
+  onPitch: (event: Hackathon) => void
 }
 
 export function DetailDrawer({
@@ -49,6 +52,7 @@ export function DetailDrawer({
   onToggleTask,
   onPlanSprint,
   onShare,
+  onPitch,
 }: Props) {
   const [confirmDelete, setConfirmDelete] = useState(false)
   const today = startOfDay(new Date())
@@ -218,6 +222,10 @@ export function DetailDrawer({
           <Wand2 size={15} /> {event.tasks.length > 0 ? 'Fill in my sprint plan' : 'Plan my sprint'}
         </button>
       )}
+
+      <button className="btn btn-secondary detail-plan" onClick={() => onPitch(event)}>
+        <Mic size={15} /> {pitchProgress(event.pitch) > 0 ? 'Edit my pitch' : 'Write my pitch'}
+      </button>
 
       <button className="btn btn-quiet detail-plan" onClick={() => onShare(event)}>
         <Share2 size={15} /> Share plan with my team

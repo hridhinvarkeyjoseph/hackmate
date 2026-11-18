@@ -1,4 +1,5 @@
 import type { Hackathon } from '../types'
+import { pitchProgress } from './pitch'
 
 export type Readiness = {
   score: number
@@ -21,7 +22,7 @@ export function assessReadiness(event: Hackathon): Readiness {
     { points: 15, earned: event.submission.video ? 1 : 0, fix: 'Add your demo video' },
     { points: 10, earned: teamReady ? 1 : 0, fix: 'Name your team' },
     { points: 5, earned: event.tasks.length > 0 ? 1 : 0, fix: 'Make a plan' },
-    { points: 5, earned: event.notes.trim() ? 1 : 0, fix: 'Write down your idea' },
+    { points: 5, earned: pitchProgress(event.pitch), fix: 'Write your pitch' },
   ]
 
   const score = Math.round(checks.reduce((total, check) => total + check.points * check.earned, 0))

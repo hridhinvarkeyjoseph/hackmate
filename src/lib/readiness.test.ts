@@ -35,7 +35,7 @@ describe('assessReadiness', () => {
   it('reaches 100 when everything is in place', () => {
     const result = assessReadiness({
       ...blank,
-      notes: 'Idea',
+      pitch: { project: 'a', problem: 'b', audience: 'c', solution: 'd', demo: 'e', impact: 'f' },
       team: [{ id: 'a', name: 'Asha', role: 'Dev' }],
       tasks: [{ id: 'a', label: 'One', done: true }],
       submission: { repo: 'r', demo: 'd', video: 'v' },

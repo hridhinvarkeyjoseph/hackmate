@@ -32,6 +32,15 @@ export type Submission = {
   video: string
 }
 
+export type Pitch = {
+  project: string
+  problem: string
+  audience: string
+  solution: string
+  demo: string
+  impact: string
+}
+
 export type Hackathon = {
   id: string
   name: string
@@ -52,6 +61,7 @@ export type Hackathon = {
   team: TeamMember[]
   tasks: Task[]
   submission: Submission
+  pitch?: Pitch
 }
 
 export type ViewName = 'overview' | 'hackathons' | 'calendar' | 'insights' | 'suggest'

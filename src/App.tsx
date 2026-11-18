@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AlertTriangle, Check, Sparkles } from 'lucide-react'
-import type { Hackathon, Theme, ViewName } from './types'
+import type { Hackathon, Pitch, Theme, ViewName } from './types'
 import { sampleHackathons } from './data'
 import { daysUntil } from './lib/date'
 import { backupDue, isSampleBoard, loadEvents, makeId, saveEvents } from './lib/storage'
@@ -20,6 +20,7 @@ import { SuggestView } from './components/SuggestView'
 import { FinderView } from './components/FinderView'
 import { TimerWidget } from './components/TimerWidget'
 import { JoinPlanDrawer } from './components/JoinPlanDrawer'
+import { PitchDrawer } from './components/PitchDrawer'
 import { WelcomeDrawer, type WelcomeChoices } from './components/WelcomeDrawer'
 import { useLiveFeed } from './lib/useLiveFeed'
 import { planSprint } from './lib/planner'
@@ -52,6 +53,7 @@ export default function App() {
   const [editorOpen, setEditorOpen] = useState(false)
   const [dataOpen, setDataOpen] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [pitchId, setPitchId] = useState<string | null>(null)
   const [toast, setToast] = useState<string | null>(null)
   const [toastTone, setToastTone] = useState<'success' | 'warning'>('success')
   const [undo, setUndo] = useState<{ event: Hackathon; index: number } | null>(null)
@@ -283,6 +285,26 @@ export default function App() {
     [notify],
   )
 
+  const openPitch = useCallback((event: Hackathon) => {
+    rememberTrigger()
+    setDetailId(null)
+    setPitchId(event.id)
+  }, [])
+
+  const closePitch = useCallback(() => {
+    setDetailId(pitchId)
+    setPitchId(null)
+  }, [pitchId])
+
+  const handlePitchChange = useCallback(
+    (pitch: Pitch) => {
+      setEvents((previous) =>
+        previous.map((event) => (event.id === pitchId ? { ...event, pitch } : event)),
+      )
+    },
+    [pitchId],
+  )
+
   const handleClear = useCallback(() => {
     setEvents([])
     setDataOpen(false)
@@ -374,6 +396,7 @@ export default function App() {
   const selectedEvent = detailId
     ? events.find((event) => event.id === detailId) ?? null
     : null
+  const pitchEvent = pitchId ? events.find((event) => event.id === pitchId) ?? null : null
   const editingEvent = editingId
     ? events.find((event) => event.id === editingId) ?? null
     : null
@@ -484,6 +507,8 @@ export default function App() {
         <JoinPlanDrawer plan={sharedPlan} onJoin={joinSharedPlan} onClose={closeSharedPlan} />
       ) : welcomeOpen ? (
         <WelcomeDrawer initialName={userName} onFinish={finishWelcome} onSkip={skipWelcome} />
+      ) : pitchEvent ? (
+        <PitchDrawer event={pitchEvent} onChange={handlePitchChange} onClose={closePitch} />
       ) : editorOpen ? (
         <EditorDrawer
           key={editingId ?? 'new'}
@@ -513,6 +538,7 @@ export default function App() {
           onToggleTask={toggleTask}
           onPlanSprint={handlePlanSprint}
           onShare={handleSharePlan}
+          onPitch={openPitch}
         />
       ) : null}
 

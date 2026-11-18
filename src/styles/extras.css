@@ -1480,3 +1480,44 @@ html[data-theme='dark'] .today-focus__when--late {
 .today-focus__when--today {
   color: var(--mint-600);
 }
+
+/* --- pitch builder --- */
+.pitch textarea {
+  resize: vertical;
+}
+
+.pitch__script {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 22px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--surface);
+}
+
+.pitch__script .detail-progress__head {
+  margin-bottom: 0;
+}
+
+.pitch__script p {
+  margin: 0;
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.pitch__script small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.pitch__script .btn {
+  justify-content: center;
+}
+
+a.detail-plan {
+  display: flex;
+  text-decoration: none;
+}

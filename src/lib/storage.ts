@@ -1,5 +1,6 @@
+import { emptyPitch, MAX_PITCH_FIELD } from './pitch'
 import { saveTextFile } from './platform'
-import type { Hackathon, Mode, Status, Submission, Task, TeamMember } from '../types'
+import type { Hackathon, Pitch, Mode, Status, Submission, Task, TeamMember } from '../types'
 import { MODES, STATUSES } from '../types'
 import { sampleHackathons } from '../data'
 import { toISODate } from './date'
@@ -76,6 +77,15 @@ const normalizeSubmission = (value: unknown): Submission => {
   }
 }
 
+const normalizePitch = (value: unknown): Pitch | undefined => {
+  if (!isRecord(value)) return undefined
+  const pitch = emptyPitch()
+  for (const key of Object.keys(pitch) as Array<keyof Pitch>) {
+    pitch[key] = asString(value[key]).slice(0, MAX_PITCH_FIELD)
+  }
+  return pitch
+}
+
 /**
  * Rebuilds a hackathon from whatever was stored, so a hand-edited or
  * older save can never render a half-empty card or crash a view.
@@ -117,6 +127,7 @@ function normalizeEvent(raw: unknown, index: number): Hackathon | null {
     team: normalizeTeam(raw.team),
     tasks: normalizeTasks(raw.tasks),
     submission: normalizeSubmission(raw.submission),
+    ...(normalizePitch(raw.pitch) ? { pitch: normalizePitch(raw.pitch) } : {}),
   }
 }
 
